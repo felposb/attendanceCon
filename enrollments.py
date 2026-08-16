@@ -12,47 +12,46 @@ def search_enrollment(id):
             return e
     return None
 
-def register_enrollment(id, student_id, class_id, number):
+def register_enrollment(id_student, id_class, number):
     enrollments = load(ENROLLMENTS)
-    enrollment = search_enrollment(id)
-    if enrollment is not None:
-        return "Its already exists"
-    student = search_student(student_id)
+    student = search_student(id_student)
     if student is None:
         return "Student doesnt exist"
-    class1 = search_class(class_id)
+    class1 = search_class(id_class)
     if class1 is None:
         return "Class doesnt exist"
     for e in enrollments:
+        if e['id_student'] == id_student and e['id_class'] == id_class:
+            return "Student is already enrolled in this class"
         if e['number'] == number:
             return "This enrollment has already exist"
     new_enrollment = {
         "id": next_id(enrollments),
         "number": number,
-        "student_id": student_id,
-        "class_id": class_id
+        "id_student": id_student,
+        "id_class": id_class
     }
     enrollments.append(new_enrollment)
     save(ENROLLMENTS, enrollments)
     return "Saved"
 
-def update_enrollment(id, student_id, class_id, number):
+def update_enrollment(id, id_student, id_class, number):
     enrollments = load(ENROLLMENTS)
     for e in enrollments:
         same_id = e['id'] == id
         if same_id: 
-            if student_id != "":
-                student_id = int(student_id)
-                student = search_student(student_id)
+            if id_student != "":
+                id_student = int(id_student)
+                student = search_student(id_student)
                 if student is None:
                     return "Student doesnt exist"
-                e['student_id'] = student_id
-            if class_id != "":
-                class_id = int(class_id)
-                class1 = search_class(class_id)
+                e['id_student'] = id_student
+            if id_class != "":
+                id_class = int(id_class)
+                class1 = search_class(id_class)
                 if class1 is None:
                     return "Class doesnt exist"
-                e['class_id'] = class_id
+                e['id_class'] = id_class
             if number != "":
                 number = int(number)
                 for enrollment in enrollments:

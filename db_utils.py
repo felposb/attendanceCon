@@ -18,3 +18,6 @@ def calculate_age(birth_date):
     if (today.month - today.day) < (birth.month - birth.day):
         age -= 1
     return age
+
+def date_now():
+    return date.today()

@@ -9,11 +9,12 @@ def search_student(id):
             return s
     return None
     
-def register_student(id, name, birth_date, adress, phone):
+def register_student(name, birth_date, adress, phone):
     students = load(STUDENTS)
-    student = search_student(id)
-    if student is not None:
-        return "Student has already exists"
+    for s in students:
+        same_phone = s['phone'] 
+        if same_phone:
+            return "This students already exists"
     age = calculate_age(birth_date)
     new_student = {
         "id": next_id(students),

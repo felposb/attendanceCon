@@ -9,9 +9,9 @@ def search_subject(id):
             return s
     return None
 
-def register_subject(id, name):
+def register_subject(name, id_subject):
     subjects = load(SUBJECTS)
-    subject = search_subject(id)
+    subject = search_subject(id_subject)
     if subject is not None:
         return "Already exists"
     new_subject = {
