@@ -11,11 +11,8 @@ def search_classroom(id):
             return c
     return None
 
-def register_classroom(id, classroom_number, block):
+def register_classroom(classroom_number, block):
     classrooms = load(CLASSROOMS)
-    classroom = search_classroom(id)
-    if classroom is not None:
-        return "Classroom has already exists"
     for c in classrooms:
         same_classroom_number = c['classroom_number'] == classroom_number
         same_block = c['block'] == block

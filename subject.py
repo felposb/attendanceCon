@@ -9,11 +9,11 @@ def search_subject(id):
             return s
     return None
 
-def register_subject(name, id_subject):
+def register_subject(name):
     subjects = load(SUBJECTS)
-    subject = search_subject(id_subject)
-    if subject is not None:
-        return "Already exists"
+    for s in subjects:
+        if s['name'] == "" or s['name'] == name:
+            return "Its already exists"
     new_subject = {
         "id": next_id(subjects),
         "name": name

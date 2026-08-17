@@ -9,11 +9,13 @@ def search_class(id):
         if same_id:
             return c
     return None
-def register_class(id, number_class, letter_class):
+def register_class(number_class, letter_class):
     classes = load(CLASSES)
-    class1 = search_class(id)
-    if class1 is not None:
-        return "Its already exists"
+    for c in classes:
+        same_number = c['number_class'] == number_class
+        same_letter = c['letter_class'] == letter_class
+        if same_letter and same_number:
+            return "Its already exists"
     new_class = {
         "id": next_id(classes),
         "number_class": number_class,

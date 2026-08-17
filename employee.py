@@ -9,15 +9,17 @@ def search_employee(id):
             return e
     return None
 
-def register_employee(id, name, role):
+def register_employee(name, role, cpf):
     employees = load(EMPLOYEES)
-    employee = search_employee(id)
-    if employee is not None:
-        return "Employee has already exists"
+    for e in employees:
+        same_cpf = e['cpf'] == cpf
+        if same_cpf:
+            return "This employee already exists"
     new_employee = {
         "id": next_id(employees),
         "name": name,
-        "role": role
+        "role": role,
+        "cpf": cpf
     }
     employees.append(new_employee)
     save(EMPLOYEES, employees)
