@@ -1,9 +1,8 @@
-from db_utils import save, load, next_id
-from student import search_student
+from services.db_utils import save, load, next_id
 ATTENDANCES = "entities/attendance.json"
 
 def search_attendances(id):
-    attendances = load(ATTENDANCE)
+    attendances = load(ATTENDANCES)
     for a in attendances:
         same_id = a['id']  == id
         if same_id:
@@ -27,3 +26,9 @@ def register_attendance(uid,id_classroom, id_teacher_class, id_student):
     attendances.append(new_attendance)
     save(ATTENDANCES, attendances)
     return "Saved"
+
+def update_attendance(id, uid, id_classroom, id_teacher_class, id_student):
+    attendance = load(ATTENDANCES)
+    for a in attendance:
+        same_id = a['id'] == id
+        

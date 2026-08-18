@@ -1,4 +1,4 @@
-from db_utils import save, load, next_id
+from services.db_utils import save, load, next_id
 
 EMPLOYEES = "entities/employees.json"
 def search_employee(id):

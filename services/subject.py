@@ -1,4 +1,4 @@
-from db_utils import save, load, next_id
+from services.db_utils import save, load, next_id
 
 SUBJECTS = "entities/subjects.json"
 def search_subject(id):

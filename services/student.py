@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from db_utils import save, load, next_id, calculate_age
+from services.db_utils import save, load, next_id, calculate_age
 STUDENTS = "entities/students.json"
 def search_student(id):
     students = load(STUDENTS)

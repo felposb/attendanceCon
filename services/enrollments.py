@@ -1,6 +1,6 @@
-from student import search_student
-from classes import search_class
-from db_utils import save, load, next_id
+from services.student import search_student
+from services.classes import search_class
+from services.db_utils import save, load, next_id
 
 ENROLLMENTS = "entities/enrollments.json"
 

@@ -1,5 +1,5 @@
-from db_utils import save, load, date_now, next_id
-from student import search_student
+from services.db_utils import save, load, date_now, next_id
+from services.student import search_student
 CARDS = "entities/cards.json"
 
 def search_cards(id):

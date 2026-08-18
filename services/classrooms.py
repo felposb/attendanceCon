@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from db_utils import save, load, next_id
+from services.db_utils import save, load, next_id
 
 CLASSROOMS = "entities/classrooms.json"
 

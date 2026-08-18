@@ -1,7 +1,7 @@
-from db_utils import save, load, next_id, date_now
-from classes import search_class
-from subject import search_subject
-from employee import search_employee
+from services.db_utils import save, load, next_id, date_now
+from services.classes import search_class
+from services.subject import search_subject
+from services.employee import search_employee
 TEACHER_CLASSES = "entities/teacher_classes.json"
 
 def search_teacher_class(id):
