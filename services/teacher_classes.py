@@ -43,7 +43,7 @@ def update_teacher_classes(id, id_class, id_subject):
       if id_class != "":
         classes = search_class(int(id_class))
         if classes is None:
-          return "Class not fount"
+          return "Class not found"
         t['id_class'] = id_class
       if id_subject != "":
         subjects = search_subject(int(id_subject))

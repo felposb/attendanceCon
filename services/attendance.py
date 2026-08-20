@@ -1,4 +1,5 @@
-from services.db_utils import save, load, next_id
+from services.db_utils import save, load, next_id, date_now
+from services.cards import search_cards
 ATTENDANCES = "entities/attendance.json"
 
 def search_attendances(id):
@@ -11,11 +12,13 @@ def search_attendances(id):
 
 def register_attendance(uid,id_classroom, id_teacher_class, id_student):
     attendances = load(ATTENDANCES)
-    for a in attendances:
+    today = str(date_now())     
+    for a in attendances:       
         same_uid = a['uid'] == uid
         same_id_student = a['id_student'] == id_student
-        if same_id_student or same_uid:
-            return "Its already exist"
+        if(same_id_student or same_uid) and today:
+            return "Its already registered for today"
+        
     new_attendance = {
         "id": next_id(attendances),
         "uid": uid,
@@ -31,4 +34,5 @@ def update_attendance(id, uid, id_classroom, id_teacher_class, id_student):
     attendance = load(ATTENDANCES)
     for a in attendance:
         same_id = a['id'] == id
+        
         
