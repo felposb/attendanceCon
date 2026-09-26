@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07090d">
+  <title>Face Scan 3D · AttendanceCon</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+        "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/vision_bundle.mjs"
+      }
+    }
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <main id="app">
+    <!-- 1. Introdução -->
+    <section id="screen-intro" class="screen active" aria-labelledby="intro-title">
+      <div class="intro">
+        <div class="intro-badge" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M8 20V12a4 4 0 0 1 4-4h8M44 8h8a4 4 0 0 1 4 4v8M56 44v8a4 4 0 0 1-4 4h-8M20 56h-8a4 4 0 0 1-4-4v-8" /><path d="M24 26v4M40 26v4M32 26v12h-3M25 44c4 3 10 3 14 0" /></svg>
+        </div>
+        <h1 id="intro-title">Face Scan 3D</h1>
+        <p class="lead">Mapeia <strong>478 pontos</strong> do seu rosto, calcula um vetor de <strong>2.362 dimensões</strong> para cada ponto e monta seu rosto em 3D a partir de fotos de frente e de perfil.</p>
+        <ol class="howto">
+          <li><span>1</span>Olhe para a câmera com o rosto dentro do círculo.</li>
+          <li><span>2</span>Siga as setas, a voz e os toques para virar a cabeça: esquerda, direita, cima, baixo e em círculo.</li>
+          <li><span>3</span>Veja e gire seu rosto 3D, inspecione os vetores de cada ponto e exporte.</li>
+        </ol>
+        <div class="options">
+          <label class="switch"><input type="checkbox" id="opt-voice" checked><span></span>Instruções por voz</label>
+          <label class="switch"><input type="checkbox" id="opt-haptics" checked><span></span>Vibração e bipes de direção</label>
+        </div>
+        <button id="btn-start" class="btn primary big" type="button">Iniciar escaneamento</button>
+        <p class="fineprint">Tudo é processado no seu aparelho. Nenhuma imagem sai do navegador, a menos que você salve no sistema de chamada.</p>
+        <p id="intro-error" class="error" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <!-- 2. Escaneamento -->
+    <section id="screen-scan" class="screen" aria-label="Escaneamento">
+      <header class="scan-top">
+        <button id="btn-cancel" class="btn ghost" type="button">Cancelar</button>
+        <span id="scan-counter" class="counter">0/9</span>
+        <button id="btn-flip" class="btn ghost" type="button" title="Trocar câmera">Trocar câmera</button>
+      </header>
+      <div class="stage-wrap">
+        <div id="stage" class="stage">
+          <div class="stage-clip">
+            <video id="video" playsinline muted autoplay></video>
+            <canvas id="overlay"></canvas>
+          </div>
+          <svg id="ring" class="ring" viewBox="-100 -100 200 200" aria-hidden="true">
+            <circle class="guide" r="84"></circle>
+            <g id="ticks"></g>
+          </svg>
+          <div id="arrow" class="arrow" hidden><svg viewBox="0 0 40 40"><path d="M10 6l16 14-16 14" /></svg></div>
+          <div id="flash" class="flash"></div>
+          <div id="loading" class="loading"><div class="spinner"></div><p id="loading-text">Carregando IA de mapeamento facial…</p></div>
+        </div>
+      </div>
+      <p id="hint" class="hint" aria-live="polite">Preparando câmera…</p>
+      <ul id="steps" class="steps"></ul>
+      <button id="btn-finish" class="btn secondary" type="button" hidden>Concluir com as vistas atuais</button>
+      <pre id="hud" class="hud" hidden></pre>
+    </section>
+
+    <!-- 3. Processamento -->
+    <section id="screen-processing" class="screen" aria-label="Processando">
+      <div class="processing">
+        <div class="spinner large"></div>
+        <h2>Digitalizando seu rosto</h2>
+        <ol id="proc-steps" class="proc-steps">
+          <li data-step="fusion">Fundindo as vistas em 3D</li>
+          <li data-step="texture">Gerando a textura da pele</li>
+          <li data-step="mesh">Refinando a malha</li>
+          <li data-step="descriptors">Calculando os vetores dos pontos</li>
+        </ol>
+        <div class="bar"><div id="proc-bar"></div></div>
+      </div>
+    </section>
+
+    <!-- 4. Resultado -->
+    <section id="screen-result" class="screen" aria-label="Resultado">
+      <div class="result">
+        <div class="viewer-card">
+          <div id="viewer" class="viewer"></div>
+          <div class="modes" role="group" aria-label="Modo de visualização">
+            <button class="mode active" data-mode="texture" type="button">Textura</button>
+            <button class="mode" data-mode="clay" type="button">Forma</button>
+            <button class="mode" data-mode="mesh" type="button">Malha</button>
+            <button class="mode" data-mode="points" type="button">Vetores</button>
+          </div>
+          <p class="viewer-tip">Arraste para girar · pinça/scroll para zoom · toque em um ponto para ver o vetor dele</p>
+        </div>
+
+        <aside class="side">
+          <div class="stats" id="stats"></div>
+
+          <div class="card" id="inspector">
+            <h3>Inspetor de ponto</h3>
+            <p id="insp-empty" class="muted">Toque em um ponto do rosto 3D.</p>
+            <div id="insp-body" hidden>
+              <p class="insp-title"><strong id="insp-name"></strong> <span id="insp-index" class="muted"></span></p>
+              <p id="insp-pos" class="muted mono"></p>
+              <canvas id="insp-strip" class="strip" width="2362" height="36"></canvas>
+              <div class="strip-legend" id="insp-legend"></div>
+              <div class="patches" id="insp-patches"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Fotos capturadas</h3>
+            <div class="thumbs" id="thumbs"></div>
+          </div>
+
+          <div class="card">
+            <h3>Exportar</h3>
+            <div class="actions">
+              <button id="btn-glb" class="btn primary" type="button">Baixar modelo 3D (.glb)</button>
+              <button id="btn-json" class="btn secondary" type="button">Baixar template com vetores (.json)</button>
+              <button id="btn-png" class="btn secondary" type="button">Baixar imagem da visualização</button>
+            </div>
+          </div>
+
+          <div class="card" id="backend-card" hidden>
+            <h3>Salvar no sistema de chamada</h3>
+            <label class="field">Aluno
+              <select id="student-select"></select>
+            </label>
+            <label class="check"><input type="checkbox" id="opt-replace"> Substituir rosto já cadastrado</label>
+            <button id="btn-save" class="btn primary" type="button">Salvar rosto do aluno</button>
+            <p id="save-status" class="muted" role="status"></p>
+          </div>
+
+          <button id="btn-restart" class="btn ghost wide" type="button">Escanear novamente</button>
+        </aside>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -37,6 +37,10 @@ O sistema foi modelado considerando as regras de negócio de uma instituição d
 *   `cards`: Vínculo direto de um UID de hardware a um ID de aluno.
 *   `attendance` / `attendance_logs`: O motor principal do sistema, cruzando os *timestamps* do leitor físico com a grade de horários.
 
+## 📸 Face Scan 3D (cadastro facial)
+
+A pasta `face_scan/` traz um app web que escaneia o rosto do aluno pela câmera do celular ou notebook, com guia estilo Face ID (frente, perfis e círculo), mapeia 478 pontos com um vetor de 2.362 dimensões cada e gera o rosto em 3D. Para abrir: `python face_scan/server.py` e acesse http://localhost:8000. Detalhes em [`face_scan/README.md`](../face_scan/README.md).
+
 ## 🗺️ Roadmap de Desenvolvimento
 
 O projeto está sendo construído em fases evolutivas para garantir a consistência técnica em cada camada:

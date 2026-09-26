@@ -1,0 +1,10 @@
+# Dados biométricos gerados pelo Face Scan 3D (dado pessoal sensível — LGPD art. 11)
+entities/faces/*
+!entities/faces/.gitkeep
+
+# Certificado autoassinado gerado por face_scan/server.py --https
+.cert/
+
+__pycache__/
+*.pyc
+node_modules/

@@ -1,0 +1,9 @@
+{
+  "name": "attendancecon-face-scan",
+  "private": true,
+  "type": "module",
+  "description": "Face Scan 3D: app web sem etapa de build (dependências carregadas via CDN).",
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\""
+  }
+}
