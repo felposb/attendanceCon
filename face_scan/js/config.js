@@ -1,9 +1,24 @@
 // Configuração central do Face Scan 3D.
+// Uma página pode sobrescrever alguns valores definindo window.FACE_SCAN_CONFIG antes de carregar o app.
+
+const OVERRIDES = globalThis.FACE_SCAN_CONFIG || {};
 
 export const MEDIAPIPE_VERSION = '1.0.1';
-export const MEDIAPIPE_WASM = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`;
-export const FACE_MODEL_URL =
-  'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+export const MEDIAPIPE_WASM = OVERRIDES.wasmBase
+  || `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_VERSION}/wasm`;
+export const FACE_MODEL_URL = OVERRIDES.modelUrl
+  || 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+
+// photoOnly: esconde a câmera ao vivo (ambientes onde getUserMedia é bloqueado).
+// claudeDownloads: salva arquivos pela capability "downloads" de um Artifact do claude.ai.
+// modelBase64: o arquivo do modelo está codificado em base64 (hospedagens que não servem binários).
+export const MODEL_BASE64 = Boolean(OVERRIDES.modelBase64);
+export const PHOTO_ONLY = Boolean(OVERRIDES.photoOnly);
+export const CLAUDE_DOWNLOADS = Boolean(OVERRIDES.claudeDownloads);
+export const BACKEND_ENABLED = OVERRIDES.backend !== false;
+
+// Maior lado das fotos enviadas no modo passo a passo (fotos de celular têm 12 MP ou mais).
+export const PHOTO_MAX_SIDE = 1280;
 
 // Pontos devolvidos pelo FaceLandmarker: 468 da malha + 10 da íris.
 export const NUM_LANDMARKS = 478;

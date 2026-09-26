@@ -65,6 +65,31 @@ button { font: inherit; }
 .switch input:focus-visible + span { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 .fineprint { font-size: 13px; color: var(--muted); margin: 0; }
 
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; background: var(--panel-2); padding: 1px 5px; border-radius: 5px; }
+.start-buttons { display: grid; gap: 10px; width: 100%; justify-items: center; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip-path: inset(50%); }
+.counter-spacer { width: 88px; }
+
+/* Modo foto */
+.photo-step { width: 100%; max-width: 480px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.pose-figure { width: min(46vw, 190px); height: auto; overflow: visible; }
+.pose-figure .head { fill: var(--panel-2); stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+.pose-figure .features { fill: var(--accent); stroke: none; transition: transform .35s ease; }
+.pose-figure .features .mouth { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+.pose-arrow { transition: transform .35s ease; }
+.pose-arrow path { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 6px rgba(56, 189, 248, .9)); }
+.photo-title { margin: 0; font-size: 20px; font-weight: 650; }
+.photo-how { margin: 0; color: #c7d0dc; max-width: 42ch; }
+.photo-step .hint { min-height: 0; margin: 4px 0; font-size: 18px; }
+.photo-preview { width: 100%; max-width: 360px; }
+.photo-preview canvas { width: 100%; height: auto; border-radius: 12px; display: block; background: #000; }
+.photo-actions { display: grid; gap: 8px; width: 100%; justify-items: center; }
+.file-btn { display: inline-flex; justify-content: center; align-items: center; }
+.file-btn.busy { opacity: .6; pointer-events: none; }
+#photo-input:focus-visible + .file-btn, .file-btn:focus-within { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+#export-status { margin: 10px 0 0; font-size: 14px; }
+#export-status.err { color: var(--danger); }
+
 /* Escaneamento */
 .scan-top { width: 100%; max-width: 520px; display: flex; justify-content: space-between; align-items: center; }
 .counter { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }

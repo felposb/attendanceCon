@@ -36,7 +36,11 @@
           <label class="switch"><input type="checkbox" id="opt-voice" checked><span></span>Instruções por voz</label>
           <label class="switch"><input type="checkbox" id="opt-haptics" checked><span></span>Vibração e bipes de direção</label>
         </div>
-        <button id="btn-start" class="btn primary big" type="button">Iniciar escaneamento</button>
+        <div class="start-buttons">
+          <button id="btn-start" class="btn primary big" type="button">Escanear com a câmera ao vivo</button>
+          <button id="btn-photo" class="btn secondary big" type="button">Tirar fotos passo a passo</button>
+        </div>
+        <p id="photo-only-note" class="fineprint" hidden>Aqui a câmera ao vivo não está disponível: você tira uma foto por pose e o app diz se ficou boa ou para onde virar. No celular, o botão abre a câmera. O escaneamento contínuo com toques funciona rodando o app localmente (<code>python face_scan/server.py</code>).</p>
         <p class="fineprint">Tudo é processado no seu aparelho. Nenhuma imagem sai do navegador, a menos que você salve no sistema de chamada.</p>
         <p id="intro-error" class="error" role="alert" hidden></p>
       </div>
@@ -68,6 +72,38 @@
       <ul id="steps" class="steps"></ul>
       <button id="btn-finish" class="btn secondary" type="button" hidden>Concluir com as vistas atuais</button>
       <pre id="hud" class="hud" hidden></pre>
+    </section>
+
+    <!-- 2b. Modo foto passo a passo -->
+    <section id="screen-photo" class="screen" aria-label="Fotos passo a passo">
+      <header class="scan-top">
+        <button id="photo-cancel" class="btn ghost" type="button">Cancelar</button>
+        <span id="photo-counter" class="counter">0/5</span>
+        <span class="counter-spacer"></span>
+      </header>
+      <div class="photo-step">
+        <svg id="pose-figure" class="pose-figure" viewBox="-80 -80 160 160" aria-hidden="true">
+          <ellipse class="head" rx="40" ry="52"></ellipse>
+          <g id="pose-features" class="features">
+            <ellipse cx="-15" cy="-10" rx="5" ry="3.5"></ellipse>
+            <ellipse cx="15" cy="-10" rx="5" ry="3.5"></ellipse>
+            <path d="M0 -6 L-6 12 L6 12 Z"></path>
+            <path d="M-13 25 Q0 33 13 25" class="mouth"></path>
+          </g>
+          <g id="pose-arrow" class="pose-arrow"><path d="M50 -12 L66 0 L50 12"></path></g>
+        </svg>
+        <p id="photo-title" class="photo-title">Foto 1 de 5 · De frente</p>
+        <p id="photo-how" class="photo-how"></p>
+        <p id="photo-hint" class="hint" aria-live="polite"></p>
+        <div class="photo-preview" id="photo-preview" hidden><canvas id="photo-canvas"></canvas></div>
+        <div class="photo-actions">
+          <input id="photo-input" class="visually-hidden" type="file" accept="image/*" capture="user">
+          <label class="btn primary big file-btn" for="photo-input" id="photo-take">Tirar foto</label>
+          <button id="photo-skip" class="btn ghost" type="button" hidden>Pular esta pose</button>
+          <button id="photo-finish" class="btn secondary" type="button" hidden>Gerar rosto 3D com as fotos atuais</button>
+        </div>
+        <ul id="photo-steps" class="steps"></ul>
+      </div>
     </section>
 
     <!-- 3. Processamento -->
@@ -126,6 +162,7 @@
               <button id="btn-json" class="btn secondary" type="button">Baixar template com vetores (.json)</button>
               <button id="btn-png" class="btn secondary" type="button">Baixar imagem da visualização</button>
             </div>
+            <p id="export-status" class="muted" role="status"></p>
           </div>
 
           <div class="card" id="backend-card" hidden>

@@ -174,7 +174,7 @@ export class FaceViewer {
 
   snapshot() {
     this.renderer.render(this.scene, this.camera);
-    return this.renderer.domElement.toDataURL('image/png');
+    return new Promise((resolve) => this.renderer.domElement.toBlob(resolve, 'image/png'));
   }
 
   // Exporta só a malha texturizada, em metros (unidade do glTF).

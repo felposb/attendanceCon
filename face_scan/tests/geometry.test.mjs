@@ -174,3 +174,27 @@ test('guia pede para voltar quando a cabeça vira demais ou some', () => {
   assert.equal(guide.update({ ...base, brightness: 20, pose: { yaw: 0, pitch: 0, roll: 0 } }, 300).hint.key, 'dark');
   assert.equal(guide.update({ ...base, faceWidth: 0.2, pose: { yaw: 0, pitch: 0, roll: 0 } }, 400).hint.key, 'closer');
 });
+
+test('modo foto: avalia cada foto e orienta a próxima', async () => {
+  const { evaluatePhoto } = await import('../js/guidance.js');
+  const captured = new Set();
+  const base = { faceCount: 1, faceWidthRatio: 0.4, inside: true, brightness: 120 };
+  const ctx = { captured, baseline: { yaw: 0, pitch: 0 } };
+  assert.equal(evaluatePhoto({ ...base, faceCount: 0 }, ctx).hint.key, 'no-face');
+  assert.equal(evaluatePhoto({ ...base, pose: { yaw: 30, pitch: 0 } }, ctx).hint.key, 'look');
+  let r = evaluatePhoto({ ...base, pose: { yaw: 2, pitch: 3 } }, ctx);
+  assert.equal(r.step, 'front');
+  captured.add('front');
+  r = evaluatePhoto({ ...base, pose: { yaw: -12, pitch: 0 } }, ctx);
+  assert.ok(!r.ok && r.hint.text.includes('esquerda'), r.hint.text);
+  assert.ok(r.hint.dir.x < 0);
+  r = evaluatePhoto({ ...base, pose: { yaw: 36, pitch: 2 } }, ctx);
+  assert.equal(r.step, 'right', 'aceita outra pose que ainda falta (ex.: foto espelhada)');
+  captured.add('right');
+  assert.equal(evaluatePhoto({ ...base, pose: { yaw: 40, pitch: 0 } }, ctx).hint.key, 'repeat-right');
+  assert.equal(evaluatePhoto({ ...base, pose: { yaw: -40, pitch: 0 } }, ctx).step, 'left');
+  captured.add('left');
+  r = evaluatePhoto({ ...base, pose: { yaw: 0, pitch: 8 } }, ctx);
+  assert.ok(!r.ok && r.hint.text.includes('queixo'), r.hint.text);
+  assert.equal(evaluatePhoto({ ...base, pose: { yaw: 0, pitch: 22 } }, ctx).step, 'up');
+});

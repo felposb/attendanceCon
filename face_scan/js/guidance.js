@@ -235,3 +235,69 @@ export class ScanGuide {
     return out;
   }
 }
+
+// ---------------------------------------------------------------- modo foto passo a passo
+// Para quando não há câmera ao vivo: a pessoa tira uma foto por pose e o app diz se ficou
+// boa ou para onde virar antes de tirar de novo.
+
+export const PHOTO_STEPS = ['front', 'left', 'right', 'up', 'down'];
+export const PHOTO_REQUIRED = ['front', 'left', 'right'];
+export const PHOTO_GUIDE = {
+  front: { title: 'De frente', how: 'Segure o aparelho na altura dos olhos, com o rosto inteiro na foto, e olhe direto para a câmera.' },
+  left: { title: 'Perfil esquerdo', how: 'Vire o rosto uns 45° para a sua esquerda, com o queixo reto. O rosto inteiro precisa aparecer.' },
+  right: { title: 'Perfil direito', how: 'Vire o rosto uns 45° para a sua direita, com o queixo reto. O rosto inteiro precisa aparecer.' },
+  up: { title: 'Olhando para cima', how: 'Levante o queixo uns 25°, sem virar para os lados.' },
+  down: { title: 'Olhando para baixo', how: 'Abaixe o queixo uns 20°, sem virar para os lados.' },
+};
+const CARDINAL = SECTORS.filter((s) => PHOTO_STEPS.includes(s.id));
+
+export function directionPhrase(dir) {
+  const h = Math.abs(dir.x) > 0.38 ? (dir.x < 0 ? 'para a esquerda' : 'para a direita') : '';
+  const v = Math.abs(dir.y) > 0.38 ? (dir.y > 0 ? 'para cima' : 'para baixo') : '';
+  if (h && v) return `Vire mais ${h} e ${v}`;
+  if (h) return `Vire mais ${h}`;
+  return v === 'para cima' ? 'Levante mais o queixo' : 'Abaixe mais o queixo';
+}
+
+// obs: { faceCount, pose, faceWidthRatio, inside, brightness }
+// state: { captured: Set, skipped: Set, baseline }
+// Retorna { ok, step?, hint: { key, text, tone, dir } }
+export function evaluatePhoto(obs, { captured, skipped = new Set(), baseline }) {
+  const fail = (key, text, dir = null) => ({ ok: false, hint: hint(key, text, 'warn', dir) });
+  if (!obs.faceCount) return fail('no-face', 'Não encontrei um rosto nessa foto. Use boa luz e deixe o rosto inteiro na imagem.');
+  if (obs.faceCount > 1) return fail('many-faces', 'Apareceu mais de um rosto. Tire outra foto só com você.');
+  if (!obs.inside) return fail('cut', 'Parte do rosto ficou fora da foto. Afaste um pouco a câmera.');
+  if (obs.faceWidthRatio < 0.15) return fail('small', 'O rosto ficou pequeno na foto. Aproxime a câmera.');
+  if (obs.brightness != null && obs.brightness < QUALITY.minBrightness) {
+    return fail('dark', 'A foto ficou escura. Procure um lugar mais iluminado.');
+  }
+
+  if (!captured.has('front')) {
+    const head = headVector(obs.pose);
+    if (Math.abs(head.yaw) > 12 || Math.abs(head.pitch) > 12) {
+      return fail('look', 'Para a primeira foto, olhe direto para a câmera.', towards(head.u, head.v, 0, 0));
+    }
+    return { ok: true, step: 'front', hint: hint('ok-front', 'Foto de frente registrada!', 'good') };
+  }
+
+  const target = PHOTO_STEPS.find((s) => !captured.has(s) && !skipped.has(s));
+  const targetSector = SECTOR_BY_ID[target];
+  const head = headVector(obs.pose, baseline);
+  if (head.r > POSE_TARGETS.maxRadius) {
+    return fail('too-far', 'Virou demais: parte do rosto sumiu. Vire um pouco menos.', towards(head.u, head.v, 0, 0));
+  }
+  if (head.r < 0.8) {
+    if (!targetSector) return fail('weak', 'Vire mais a cabeça para registrar outro ângulo.');
+    const tu = 1.2 * Math.cos((targetSector.angle * Math.PI) / 180);
+    const tv = 1.2 * Math.sin((targetSector.angle * Math.PI) / 180);
+    const dir = towards(head.u, head.v, tu, tv);
+    return fail(`weak-${target}`, `${directionPhrase(dir)} e tire de novo.`, dir);
+  }
+  let sector = CARDINAL[0];
+  for (const s of CARDINAL) if (angleDiff(head.angle, s.angle) < angleDiff(head.angle, sector.angle)) sector = s;
+  if (captured.has(sector.id)) {
+    const next = targetSector ? PHOTO_GUIDE[target].title.toLowerCase() : 'outro ângulo';
+    return fail(`repeat-${sector.id}`, `Essa pose já foi registrada. Agora falta: ${next}.`);
+  }
+  return { ok: true, step: sector.id, hint: hint(`ok-${sector.id}`, `${PHOTO_GUIDE[sector.id].title} registrado!`, 'good') };
+}

@@ -1,11 +1,17 @@
 // Face Scan 3D — fluxo principal: câmera → guia estilo Face ID → reconstrução 3D → resultado.
 
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
-import { MEDIAPIPE_WASM, FACE_MODEL_URL, CAMERA_IDEAL, FRAMING, TEXTURE_SIZE, NUM_LANDMARKS } from './config.js';
+import {
+  MEDIAPIPE_WASM, FACE_MODEL_URL, CAMERA_IDEAL, FRAMING, TEXTURE_SIZE, NUM_LANDMARKS,
+  PHOTO_ONLY, CLAUDE_DOWNLOADS, BACKEND_ENABLED, PHOTO_MAX_SIDE, MODEL_BASE64,
+} from './config.js';
 import { TRIANGLES, UVS } from './face_topology.js';
 import { FrameAnalyzer, landmarkBox } from './quality.js';
 import { PoseTracker, poseFromMatrix } from './pose.js';
-import { ScanGuide, STEPS, STEP_LABELS, angleDiff, nearestSector } from './guidance.js';
+import {
+  ScanGuide, STEPS, STEP_LABELS, SECTORS, angleDiff, nearestSector,
+  PHOTO_STEPS, PHOTO_REQUIRED, PHOTO_GUIDE, evaluatePhoto,
+} from './guidance.js';
 import { Feedback } from './feedback.js';
 import {
   toPixel3D, landmarkNormals, fuseViews, toMillimeters, loopSubdivide, faceMeasurements, poseFromLandmarks,
@@ -25,6 +31,7 @@ const TICKS = 72;
 
 const state = {
   landmarker: null,
+  runningMode: 'VIDEO',
   delegate: params.has('cpu') ? 'CPU' : 'GPU',
   stream: null,
   facingMode: 'user',
@@ -61,10 +68,22 @@ function showScreen(id) {
 
 // ---------------------------------------------------------------- IA
 
+async function modelAsset() {
+  if (!MODEL_BASE64) return { modelAssetPath: FACE_MODEL_URL };
+  if (!state.modelBytes) {
+    const res = await fetch(FACE_MODEL_URL);
+    if (!res.ok) throw new Error(`modelo indisponível (HTTP ${res.status})`);
+    const bin = atob((await res.text()).trim());
+    state.modelBytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) state.modelBytes[i] = bin.charCodeAt(i);
+  }
+  return { modelAssetBuffer: state.modelBytes.slice() };
+}
+
 async function createLandmarker(delegate) {
   const fileset = await FilesetResolver.forVisionTasks(MEDIAPIPE_WASM);
   return FaceLandmarker.createFromOptions(fileset, {
-    baseOptions: { modelAssetPath: FACE_MODEL_URL, delegate },
+    baseOptions: { ...(await modelAsset()), delegate },
     runningMode: 'VIDEO',
     numFaces: 2,
     outputFaceBlendshapes: true,
@@ -77,6 +96,7 @@ async function createLandmarker(delegate) {
 
 async function ensureLandmarker() {
   if (state.landmarker) return;
+  state.runningMode = 'VIDEO';
   try {
     state.landmarker = await createLandmarker(state.delegate);
   } catch (err) {
@@ -87,14 +107,20 @@ async function ensureLandmarker() {
   }
 }
 
+async function setRunningMode(mode) {
+  if (state.runningMode === mode) return;
+  await state.landmarker.setOptions({ runningMode: mode });
+  state.runningMode = mode;
+}
+
 // ---------------------------------------------------------------- câmera
 
 function cameraErrorMessage(err) {
   if (!window.isSecureContext) {
-    return 'A câmera só funciona em HTTPS ou em http://localhost. Veja o README (face_scan/README.md) para abrir no celular com HTTPS.';
+    return 'A câmera ao vivo só funciona em HTTPS ou em http://localhost. Use "Tirar fotos passo a passo" ou veja o README (face_scan/README.md) para abrir com HTTPS.';
   }
   switch (err?.name) {
-    case 'NotAllowedError': return 'Permissão da câmera negada. Libere o acesso à câmera nas configurações do navegador e tente de novo.';
+    case 'NotAllowedError': return 'Permissão da câmera negada. Libere o acesso à câmera nas configurações do navegador ou use "Tirar fotos passo a passo".';
     case 'NotFoundError': return 'Nenhuma câmera encontrada neste aparelho.';
     case 'NotReadableError': return 'A câmera está sendo usada por outro aplicativo. Feche-o e tente novamente.';
     default: return `Não foi possível abrir a câmera (${err?.message || err}).`;
@@ -162,6 +188,7 @@ async function startScan() {
 
   try {
     await ensureLandmarker();
+    await setRunningMode('VIDEO');
     $('#loading-text').textContent = 'Abrindo a câmera…';
     await startCamera();
   } catch (err) {
@@ -299,6 +326,7 @@ function captureKeyframe(name, landmarks, pose, W, H) {
     height: H,
     landmarks: landmarks.map((p) => ({ x: p.x, y: p.y, z: p.z })),
     pose: { ...pose },
+    mirrored: state.mirrored,
   });
   state.feedback.captured();
   const flash = $('#flash');
@@ -415,6 +443,10 @@ function updateHud(obs, step) {
 function finishScan() {
   if (!state.running) return;
   stopScan();
+  runProcessing();
+}
+
+function runProcessing() {
   state.feedback.complete();
   state.feedback.say('done', 'Mapeamento completo. Gerando seu rosto em 3D.', { force: true });
   processScan().catch((err) => {
@@ -451,6 +483,7 @@ async function processScan() {
       width: kf.width,
       height: kf.height,
       pose: kf.pose,
+      mirrored: kf.mirrored,
       landmarks: kf.landmarks,
       canvas: kf.canvas,
       P,
@@ -522,7 +555,7 @@ function renderStats(scan) {
         <dt>Largura do rosto</dt><dd>≈ ${nf(m.faceWidth)} mm</dd>
         <dt>Altura (testa–queixo)</dt><dd>≈ ${nf(m.faceHeight)} mm</dd>
         <dt>Comprimento do nariz</dt><dd>≈ ${nf(m.noseLength)} mm</dd>
-        <dt>Projeção do nariz</dt><dd>≈ ${nf(m.noseDepth)} mm</dd>
+        <dt>Profundidade (nariz → laterais)</dt><dd>≈ ${nf(m.noseDepth)} mm</dd>
         <dt>Largura da boca</dt><dd>≈ ${nf(m.mouthWidth)} mm</dd>
       </dl>
       <span>Escala estimada assumindo distância interpupilar de 63 mm.</span>
@@ -548,7 +581,7 @@ function renderThumbs(scan) {
     const g = c.getContext('2d');
     const s = 150 / w;
     g.save();
-    if (state.mirrored) { g.translate(150, 0); g.scale(-1, 1); }
+    if (v.mirrored) { g.translate(150, 0); g.scale(-1, 1); }
     g.drawImage(v.canvas, cx - w / 2, cy - h / 2, w, h, 0, 0, 150, 200);
     g.fillStyle = 'rgba(94, 234, 212, 0.9)';
     for (const p of v.landmarks) {
@@ -632,7 +665,7 @@ function renderInspector(index) {
 async function setupBackend() {
   const card = $('#backend-card');
   card.hidden = true;
-  if (!(await exporter.backendAvailable())) return;
+  if (!BACKEND_ENABLED || !(await exporter.backendAvailable())) return;
   try {
     const students = await exporter.listStudents();
     const select = $('#student-select');
@@ -662,10 +695,242 @@ function showResult() {
   renderStats(scan);
   renderThumbs(scan);
   $('#save-status').textContent = '';
+  setExportStatus('');
   setupBackend();
 }
 
+// ---------------------------------------------------------------- modo foto passo a passo
+
+const photo = { captured: new Set(), skipped: new Set(), baseline: { yaw: 0, pitch: 0 }, busy: false };
+
+function photoTarget() {
+  return PHOTO_STEPS.find((s) => !photo.captured.has(s) && !photo.skipped.has(s)) ?? null;
+}
+
+function setPhotoHint(hint) {
+  const el = $('#photo-hint');
+  el.textContent = hint.text;
+  el.className = `hint ${hint.tone || ''}`;
+}
+
+function setPhotoBusy(busy) {
+  photo.busy = busy;
+  $('#photo-take').classList.toggle('busy', busy);
+  $('#photo-input').disabled = busy;
+}
+
+// Figura de uma cabeça virada para a pose pedida, vista como num espelho
+// (a esquerda da pessoa aparece à esquerda da tela). dir: direção em que ainda falta virar.
+function drawPoseFigure(target, dir) {
+  const sector = SECTORS.find((s) => s.id === target);
+  const a = sector ? (sector.angle * Math.PI) / 180 : 0;
+  const fx = sector ? Math.cos(a) * 16 : 0, fy = sector ? -Math.sin(a) * 13 : 0;
+  $('#pose-features').style.transform = `translate(${fx}px, ${fy}px)`;
+  const arrow = $('#pose-arrow');
+  const screen = dir ? { x: dir.x, y: -dir.y } : sector ? { x: Math.cos(a), y: -Math.sin(a) } : null;
+  if (screen) {
+    arrow.style.transform = `rotate(${(Math.atan2(screen.y, screen.x) * 180) / Math.PI}deg)`;
+    arrow.setAttribute('visibility', 'visible');
+  } else {
+    arrow.setAttribute('visibility', 'hidden');
+  }
+}
+
+function renderPhotoStep(dir = null) {
+  const target = photoTarget();
+  const total = PHOTO_STEPS.length;
+  if (target) {
+    $('#photo-title').textContent = `Foto ${PHOTO_STEPS.indexOf(target) + 1} de ${total} · ${PHOTO_GUIDE[target].title}`;
+    $('#photo-how').textContent = PHOTO_GUIDE[target].how;
+  }
+  $('#photo-counter').textContent = `${photo.captured.size}/${total}`;
+  $('#photo-steps').innerHTML = PHOTO_STEPS.map((s) => {
+    const cls = photo.captured.has(s) ? 'done' : s === target ? 'current' : '';
+    return `<li class="${cls}">${PHOTO_GUIDE[s].title}</li>`;
+  }).join('');
+  $('#photo-skip').hidden = !target || PHOTO_REQUIRED.includes(target);
+  $('#photo-finish').hidden = !PHOTO_REQUIRED.every((s) => photo.captured.has(s));
+  $('#photo-take').textContent = photo.captured.size ? 'Tirar a próxima foto' : 'Tirar foto';
+  drawPoseFigure(target, dir);
+}
+
+async function startPhotoMode() {
+  $('#intro-error').hidden = true;
+  state.feedback.voice = $('#opt-voice').checked;
+  state.feedback.haptics = $('#opt-haptics').checked;
+  state.feedback.unlock();
+  photo.captured = new Set();
+  photo.skipped = new Set();
+  photo.baseline = { yaw: 0, pitch: 0 };
+  state.keyframes = [];
+  state.analyzer ??= new FrameAnalyzer();
+  showScreen('screen-photo');
+  $('#photo-preview').hidden = true;
+  renderPhotoStep();
+  setPhotoBusy(true);
+  setPhotoHint({ text: 'Carregando IA de mapeamento facial…', tone: 'info' });
+  try {
+    await ensureLandmarker();
+    await setRunningMode('IMAGE');
+  } catch (err) {
+    console.error(err);
+    showScreen('screen-intro');
+    const box = $('#intro-error');
+    box.textContent = `Falha ao carregar o modelo de IA: ${err.message || err}.`;
+    box.hidden = false;
+    return;
+  } finally {
+    setPhotoBusy(false);
+  }
+  setPhotoHint({ text: '', tone: '' });
+  state.feedback.say('photo-start', `Primeira foto. ${PHOTO_GUIDE.front.how}`, { force: true });
+}
+
+async function loadPhotoCanvas(file) {
+  let source;
+  try {
+    source = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch {
+    source = await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('formato de imagem não suportado'));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  const w0 = source.naturalWidth || source.width, h0 = source.naturalHeight || source.height;
+  const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(w0, h0));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(w0 * scale);
+  canvas.height = Math.round(h0 * scale);
+  canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
+  source.close?.();
+  return canvas;
+}
+
+function drawPhotoPreview(canvas, landmarks, ok) {
+  const out = $('#photo-canvas');
+  const w = Math.min(720, canvas.width);
+  out.width = w;
+  out.height = Math.round((canvas.height * w) / canvas.width);
+  const g = out.getContext('2d');
+  g.drawImage(canvas, 0, 0, out.width, out.height);
+  if (landmarks) {
+    g.fillStyle = ok ? 'rgba(52, 211, 153, 0.95)' : 'rgba(251, 191, 36, 0.95)';
+    const r = Math.max(1, out.width / 360);
+    for (const p of landmarks) {
+      g.beginPath();
+      g.arc(p.x * out.width, p.y * out.height, r, 0, Math.PI * 2);
+      g.fill();
+    }
+  }
+  $('#photo-preview').hidden = false;
+}
+
+async function handlePhoto(file) {
+  setPhotoBusy(true);
+  setPhotoHint({ text: 'Mapeando os pontos do rosto…', tone: 'info' });
+  try {
+    const canvas = await loadPhotoCanvas(file);
+    const W = canvas.width, H = canvas.height;
+    const result = state.landmarker.detect(canvas);
+    const faces = result.faceLandmarks || [];
+    const obs = { faceCount: faces.length };
+    let landmarks = null, pose = null;
+    if (faces.length) {
+      landmarks = faces[0];
+      const matrix = result.facialTransformationMatrixes?.[0];
+      pose = matrix ? poseFromMatrix(matrix.data) : poseFromLandmarks(toPixel3D(landmarks, W, H));
+      const box = landmarkBox(landmarks, W, H);
+      obs.pose = pose;
+      obs.faceWidthRatio = (box.x1 - box.x0) / Math.min(W, H);
+      obs.inside = landmarks.every((p) => p.x > 0.003 && p.x < 0.997 && p.y > 0.003 && p.y < 0.997);
+      obs.brightness = state.analyzer.analyze(canvas, box).brightness;
+    }
+    const verdict = evaluatePhoto(obs, photo);
+    drawPhotoPreview(canvas, landmarks, verdict.ok);
+    setPhotoHint(verdict.hint);
+    if (!verdict.ok) {
+      renderPhotoStep(verdict.hint.dir);
+      if (verdict.hint.dir) state.feedback.nudge({ x: verdict.hint.dir.x, y: -verdict.hint.dir.y });
+      else state.feedback.vibrate([30, 40, 30]);
+      state.feedback.say(verdict.hint.key, verdict.hint.text, { force: true });
+      return;
+    }
+    state.keyframes.push({
+      name: verdict.step,
+      canvas,
+      width: W,
+      height: H,
+      landmarks: landmarks.map((p) => ({ x: p.x, y: p.y, z: p.z })),
+      pose: { ...pose },
+      mirrored: false,
+    });
+    photo.captured.add(verdict.step);
+    if (verdict.step === 'front') {
+      const clamp = (x) => Math.max(-10, Math.min(10, x));
+      photo.baseline = { yaw: clamp(pose.yaw), pitch: clamp(pose.pitch) };
+    }
+    state.feedback.captured();
+    const next = photoTarget();
+    if (!next) {
+      runProcessing();
+      return;
+    }
+    renderPhotoStep();
+    state.feedback.say(`photo-${next}`, `${verdict.hint.text} Agora: ${PHOTO_GUIDE[next].how}`, { force: true });
+  } catch (err) {
+    console.error(err);
+    setPhotoHint({ text: `Não consegui ler essa imagem (${err.message || err}). Tente outra foto.`, tone: 'warn' });
+  } finally {
+    setPhotoBusy(false);
+  }
+}
+
+// ---------------------------------------------------------------- exportação
+
+function setExportStatus(text, isError = false) {
+  const el = $('#export-status');
+  el.textContent = text;
+  el.className = isError ? 'err' : 'muted';
+}
+
+async function offerFile(makeBlob, filename) {
+  try {
+    setExportStatus('Preparando o arquivo…');
+    const status = await exporter.saveFile(await makeBlob(), filename);
+    setExportStatus(status === 'saved' ? `${filename} pronto.` : '');
+  } catch (err) {
+    if (err?.code === 'declined') setExportStatus('Download cancelado.');
+    else setExportStatus(`Não foi possível salvar o arquivo: ${err?.message || err?.code || err}`, true);
+  }
+}
+
 // ---------------------------------------------------------------- eventos
+
+if (PHOTO_ONLY) {
+  $('#btn-start').hidden = true;
+  $('#btn-photo').classList.replace('secondary', 'primary');
+  $('#photo-only-note').hidden = false;
+}
+if (CLAUDE_DOWNLOADS) $('#btn-glb').textContent = 'Baixar modelo 3D (.zip com .glb + textura)';
+
+$('#btn-photo').addEventListener('click', startPhotoMode);
+$('#photo-cancel').addEventListener('click', () => showScreen('screen-intro'));
+$('#photo-input').addEventListener('change', (e) => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (file && !photo.busy) handlePhoto(file);
+});
+$('#photo-skip').addEventListener('click', () => {
+  const target = photoTarget();
+  if (target && !PHOTO_REQUIRED.includes(target)) photo.skipped.add(target);
+  if (!photoTarget()) runProcessing();
+  else renderPhotoStep();
+});
+$('#photo-finish').addEventListener('click', () => {
+  if (PHOTO_REQUIRED.every((s) => photo.captured.has(s))) runProcessing();
+});
 
 $('#btn-start').addEventListener('click', startScan);
 $('#btn-cancel').addEventListener('click', () => { stopScan(); showScreen('screen-intro'); });
@@ -689,17 +954,29 @@ for (const btn of document.querySelectorAll('.mode')) {
   });
 }
 
-$('#btn-glb').addEventListener('click', async () => {
-  const blob = await state.viewer.exportGLB();
-  exporter.downloadBlob(blob, exporter.timestampName('rosto_3d', 'glb'));
+$('#btn-glb').addEventListener('click', () => {
+  if (!CLAUDE_DOWNLOADS) {
+    offerFile(() => state.viewer.exportGLB(), exporter.timestampName('rosto_3d', 'glb'));
+    return;
+  }
+  // O Artifact do claude.ai não aceita .glb diretamente: vai dentro de um .zip.
+  offerFile(async () => {
+    const glb = new Uint8Array(await (await state.viewer.exportGLB()).arrayBuffer());
+    const png = await new Promise((r) => state.scan.textureCanvas.toBlob(r, 'image/png'));
+    return exporter.zipStore([
+      { name: 'rosto_3d.glb', data: glb },
+      { name: 'textura_rosto.png', data: new Uint8Array(await png.arrayBuffer()) },
+    ]);
+  }, exporter.timestampName('rosto_3d', 'zip'));
 });
 $('#btn-json').addEventListener('click', () => {
-  const json = JSON.stringify(exporter.buildTemplate(state.scan));
-  exporter.downloadBlob(new Blob([json], { type: 'application/json' }), exporter.timestampName('rosto_template', 'json'));
+  offerFile(
+    async () => new Blob([JSON.stringify(exporter.buildTemplate(state.scan))], { type: 'application/json' }),
+    exporter.timestampName('rosto_template', 'json'),
+  );
 });
-$('#btn-png').addEventListener('click', async () => {
-  const blob = await (await fetch(state.viewer.snapshot())).blob();
-  exporter.downloadBlob(blob, exporter.timestampName('rosto_3d', 'png'));
+$('#btn-png').addEventListener('click', () => {
+  offerFile(() => state.viewer.snapshot(), exporter.timestampName('rosto_3d', 'png'));
 });
 $('#btn-save').addEventListener('click', async () => {
   const status = $('#save-status');
