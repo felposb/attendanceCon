@@ -1,0 +1,1065 @@
+<title>Brasil em Seis Governos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page:#f6f6f2; --surface:#fdfdfb; --surface-2:#f1f1ec;
+    --ink:#15171a; --ink-2:#4d5157; --muted:#85857f;
+    --grid:#e4e3dd; --axis:#c6c5be; --rule:rgba(21,23,26,.11);
+    --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+    --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+    --pres-fhc:#2a78d6; --pres-lula12:#eb6834; --pres-dilma:#1baf7a;
+    --pres-temer:#eda100; --pres-bolso:#e87ba4; --pres-lula3:#4a3aa7;
+    --band:rgba(42,120,214,.10);
+    --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:#0d0e10; --surface:#15161a; --surface-2:#1d1f23;
+      --ink:#ffffff; --ink-2:#c3c2b7; --muted:#8f8f89;
+      --grid:#2a2c31; --axis:#3a3c42; --rule:rgba(255,255,255,.11);
+      --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+      --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+      --pres-fhc:#3987e5; --pres-lula12:#d95926; --pres-dilma:#199e70;
+      --pres-temer:#c98500; --pres-bolso:#d55181; --pres-lula3:#9085e9;
+      --band:rgba(57,135,229,.14);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:#0d0e10; --surface:#15161a; --surface-2:#1d1f23;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#8f8f89;
+    --grid:#2a2c31; --axis:#3a3c42; --rule:rgba(255,255,255,.11);
+    --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --pres-fhc:#3987e5; --pres-lula12:#d95926; --pres-dilma:#199e70;
+    --pres-temer:#c98500; --pres-bolso:#d55181; --pres-lula3:#9085e9;
+    --band:rgba(57,135,229,.14);
+  }
+
+  body{
+    margin:0; background:var(--page); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1140px; margin:0 auto; padding-inline:16px; padding-block:0 64px; }
+
+  /* ---------- header ---------- */
+  header.top{ padding-block:44px 30px; border-bottom:1px solid var(--rule); }
+  .eyebrow{
+    font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); font-weight:500; margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--serif); font-weight:700; font-size:clamp(34px,6.2vw,58px);
+    line-height:1.02; letter-spacing:-.018em; margin:0 0 16px; text-wrap:balance;
+  }
+  .lede{ font-size:17px; color:var(--ink-2); max-width:64ch; margin:0; }
+  .lede strong{ color:var(--ink); font-weight:600; }
+
+  /* ---------- stat tiles ---------- */
+  .tiles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:1px;
+    background:var(--rule); border:1px solid var(--rule); border-radius:3px; margin-block:28px 0; overflow:hidden; }
+  .tile{ background:var(--surface); padding:16px 16px 14px; }
+  .tile .k{ font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .tile .v{ font-family:var(--sans); font-size:29px; font-weight:600; line-height:1.1; margin-top:7px; letter-spacing:-.02em; }
+  .tile .d{ font-size:12.5px; color:var(--ink-2); margin-top:3px; }
+  .v.pos{ color:var(--good); } .v.neg{ color:var(--critical); }
+
+  /* ---------- sections ---------- */
+  section{ padding-block:44px 0; }
+  .shead{ border-top:1px solid var(--rule); padding-top:22px; margin-bottom:20px; }
+  section:first-of-type .shead{ border-top:0; }
+  .qnum{ font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.04em; }
+  h2{ font-family:var(--serif); font-weight:600; font-size:clamp(23px,3.4vw,31px); line-height:1.15;
+      margin:6px 0 9px; letter-spacing:-.012em; text-wrap:balance; }
+  h3{ font-size:14px; font-weight:600; margin:0 0 4px; letter-spacing:-.005em; }
+  .sub{ color:var(--ink-2); font-size:15px; max-width:70ch; margin:0; }
+  .sub + .sub{ margin-top:9px; }
+
+  /* ---------- card / chart ---------- */
+  .card{ background:var(--surface); border:1px solid var(--rule); border-radius:3px; padding:18px 18px 14px; margin-top:20px; }
+  .card-head{ display:flex; flex-wrap:wrap; gap:8px 18px; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+  .card-head .unit{ font-size:11.5px; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+  .chart-scroll{ overflow-x:auto; overflow-y:hidden; margin-top:6px; }
+  .chart-scroll svg{ display:block; width:100%; min-width:820px; height:auto; }
+  .ct-wrap{ position:relative; }
+
+  text{ font-family:var(--sans); fill:var(--muted); }
+  .tick{ font-size:10px; fill:var(--muted); font-variant-numeric:tabular-nums; }
+  .tick-y{ font-size:10px; fill:var(--muted); font-variant-numeric:tabular-nums; }
+  .gridline{ stroke:var(--grid); stroke-width:1; }
+  .zeroline{ stroke:var(--axis); stroke-width:1.25; }
+  .dlabel{ font-size:10.5px; font-weight:600; fill:var(--ink); font-variant-numeric:tabular-nums; }
+  .dlabel-s{ font-size:10px; fill:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .anno{ font-size:10.5px; fill:var(--ink-2); }
+  .bar-pos{ fill:var(--good); } .bar-neg{ fill:var(--critical); }
+  .lineA{ fill:none; stroke:var(--s1); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .lineB{ fill:none; stroke:var(--s2); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .lineC{ fill:none; stroke:var(--s3); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .dotA{ fill:var(--s1); stroke:var(--surface); stroke-width:2; }
+  .dotB{ fill:var(--s2); stroke:var(--surface); stroke-width:2; }
+  .dotC{ fill:var(--s3); stroke:var(--surface); stroke-width:2; }
+  .metaband{ fill:var(--band); }
+  .metaline{ stroke:var(--s1); stroke-width:1; stroke-opacity:.5; fill:none; }
+  .hit{ fill:transparent; }
+  .hilite{ fill:var(--ink); opacity:0; }
+  .presseg{ }
+  .preslab{ font-size:10px; font-weight:600; fill:var(--surface); }
+  .preslab-out{ font-size:9.5px; font-weight:600; fill:var(--ink-2); }
+
+  /* legend */
+  .legend{ display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:12px; font-size:12px; color:var(--ink-2); }
+  .legend span.i{ display:inline-flex; align-items:center; gap:6px; }
+  .sw{ width:11px; height:11px; border-radius:2px; flex:none; }
+  .sw-line{ width:14px; height:2.5px; border-radius:2px; flex:none; }
+
+  /* tooltip */
+  .tip{ position:absolute; pointer-events:none; opacity:0; transition:opacity .09s;
+    background:var(--surface); color:var(--ink); border:1px solid var(--rule);
+    box-shadow:0 5px 18px rgba(0,0,0,.13); border-radius:3px; padding:8px 10px;
+    font-size:12px; min-width:132px; z-index:6; }
+  .tip .ty{ font-weight:600; font-size:12.5px; margin-bottom:4px; }
+  .tip .tr{ display:flex; justify-content:space-between; gap:12px; }
+  .tip .tr b{ font-family:var(--mono); font-weight:500; font-variant-numeric:tabular-nums; }
+  .tip .tp{ color:var(--muted); font-size:11px; margin-top:4px; }
+
+  /* ---------- tables ---------- */
+  .tscroll{ overflow-x:auto; margin-top:16px; border:1px solid var(--rule); border-radius:3px; background:var(--surface); }
+  table{ border-collapse:collapse; width:100%; font-size:12.5px; }
+  th,td{ padding:7px 10px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--rule); }
+  th{ font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); font-weight:500;
+      background:var(--surface-2); position:sticky; top:0; z-index:2; }
+  td.l, th.l{ text-align:left; }
+  tbody td{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  tbody td.l{ font-family:var(--sans); }
+  tr:last-child td{ border-bottom:0; }
+  td.pos{ color:var(--good); } td.neg{ color:var(--critical); }
+  .chip{ display:inline-flex; align-items:center; gap:5px; font-size:11.5px; color:var(--ink-2); }
+  .chip .sw{ width:9px; height:9px; }
+
+  /* ranked bar table */
+  .rank{ margin-top:18px; border:1px solid var(--rule); border-radius:3px; background:var(--surface); overflow:hidden; }
+  .rrow{ display:grid; grid-template-columns:30px 42px 1fr 52px; gap:10px; align-items:center;
+         padding:5px 12px; border-bottom:1px solid var(--rule); font-size:12.5px; }
+  .rrow:last-child{ border-bottom:0; }
+  .rrow .rk{ font-family:var(--mono); color:var(--muted); font-size:11px; text-align:right; }
+  .rrow .yr{ font-family:var(--mono); font-weight:500; font-variant-numeric:tabular-nums; }
+  .rtrack{ background:var(--surface-2); border-radius:2px; height:13px; position:relative; }
+  .rfill{ height:13px; border-radius:2px; }
+  .rrow .rv{ font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; font-size:12px; }
+
+  /* callouts */
+  .note{ border-left:2px solid var(--axis); padding:2px 0 2px 14px; margin-top:18px; font-size:13.5px; color:var(--ink-2); max-width:72ch; }
+  .note strong{ color:var(--ink); font-weight:600; }
+  .gap{ border:1px solid var(--rule); border-left:3px solid var(--warning); background:var(--surface);
+        border-radius:3px; padding:14px 16px; margin-top:20px; font-size:13.5px; color:var(--ink-2); }
+  .gap strong{ color:var(--ink); }
+  .two{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin-top:20px; }
+  .btn{ font-family:var(--sans); font-size:12px; border:1px solid var(--rule); background:var(--surface-2);
+        color:var(--ink); border-radius:3px; padding:5px 11px; cursor:pointer; }
+  .btn:hover{ border-color:var(--axis); }
+  .btn:focus-visible{ outline:2px solid var(--s1); outline-offset:2px; }
+  a{ color:var(--s1); }
+  ul.src{ list-style:none; padding:0; margin:14px 0 0; font-size:13px; color:var(--ink-2); }
+  ul.src li{ padding:7px 0; border-bottom:1px solid var(--rule); display:flex; gap:10px; }
+  ul.src li:last-child{ border-bottom:0; }
+  ul.src .st{ font-family:var(--mono); font-size:11px; flex:none; width:15px; text-align:center; }
+  footer{ margin-top:48px; padding-top:20px; border-top:1px solid var(--rule); font-size:12.5px; color:var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Levantamento · 25 anos · 6 governos · 11 séries</p>
+  <h1>Brasil em Seis Governos</h1>
+  <p class="lede">Tudo que o Brasil registrou entre <strong>2001 e 2025</strong>, ano a ano: PIB, contas públicas, dívida, inflação contra a meta, desemprego, juros e o Ideb das três etapas da educação básica — organizado por quem estava no Palácio do Planalto, com um veredito para cada ano.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">Anos em que cresceu</div><div class="v pos">21<span style="font-size:17px;color:var(--muted);font-weight:400">/25</span></div><div class="d">Recuou em 2009, 2015, 2016 e 2020</div></div>
+    <div class="tile"><div class="k">Anos no azul (primário)</div><div class="v">15<span style="font-size:17px;color:var(--muted);font-weight:400">/25</span></div><div class="d">Déficit em 2014–2020 e 2023–2025</div></div>
+    <div class="tile"><div class="k">Melhor ano</div><div class="v">2010</div><div class="d">PIB +7,5% · primário +2,6% do PIB</div></div>
+    <div class="tile"><div class="k">Pior ano</div><div class="v">2020</div><div class="d">PIB −3,3% · primário −9,4% do PIB</div></div>
+    <div class="tile"><div class="k">Melhor educação</div><div class="v">2025</div><div class="d">Ideb recorde nas três etapas</div></div>
+  </div>
+</header>
+
+<!-- ===================== QUEM GOVERNOU ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">01</div>
+    <h2>Quem governou, e por quanto tempo</h2>
+    <p class="sub">Cinco presidentes, seis governos. A faixa abaixo é a chave de cor usada em todo o painel — cada ano dos gráficos seguintes pertence a um destes blocos.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Linha do tempo presidencial</h3><span class="unit">2001 – 2025</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-timeline"></div></div>
+    <div class="legend" id="lg-pres"></div>
+  </div>
+
+  <div class="note">
+    <strong>Como 2016 foi tratado.</strong> Dilma Rousseff foi afastada em 12/05/2016 e perdeu o mandato em 31/08/2016; Michel Temer assumiu na mesma data. O ano de 2016 é atribuído ao governo Dilma nas médias (dela era o Orçamento e 8 dos 12 meses), e o gráfico marca a transição. FHC aparece só com 2001–2002, os dois anos do seu segundo mandato que caem no século 21.
+  </div>
+</section>
+
+<!-- ===================== CRESCEU? ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">02</div>
+    <h2>Em que anos o Brasil cresceu — e em que anos encolheu</h2>
+    <p class="sub">Variação real do PIB apurada pelo IBGE. Em 25 anos houve <strong>21 anos de crescimento e 4 de retração</strong>. As quatro quedas têm causas distintas: a crise financeira global (2009), a recessão doméstica de 2015–2016 e a pandemia (2020).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>PIB — variação real anual</h3><span class="unit">% ao ano · IBGE</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-pib"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw" style="background:var(--good)"></span>Ano de crescimento (barra acima de zero)</span>
+      <span class="i"><span class="sw" style="background:var(--critical)"></span>Ano de retração (barra abaixo de zero)</span>
+      <span class="i" style="color:var(--muted)">Faixa inferior: governo · valores completos na <a href="#tabela">tabela</a></span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>O ano recorde e o ano pior.</strong> 2010 (+7,5%) é o maior crescimento do século e o segundo maior desde 1980; 2015 (−3,5%) é a pior queda isolada, seguida de perto por 2016 (−3,3%) e 2020 (−3,3%). Somadas, 2015 e 2016 formam a única recessão de dois anos consecutivos da série — o PIB só voltou ao nível de 2014 em 2019.
+  </div>
+</section>
+
+<!-- ===================== FICOU DEVENDO? ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">03</div>
+    <h2>Em que anos o Brasil ficou devendo</h2>
+    <p class="sub">Duas perguntas diferentes, dois gráficos. O <strong>resultado primário</strong> diz se a arrecadação cobriu a despesa antes dos juros — o ano fechou no azul ou no vermelho. A <strong>dívida bruta</strong> diz quanto o país acumulou de passivo. Um país pode ter superávit e dívida alta, e vice-versa.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Resultado primário do setor público consolidado</h3><span class="unit">% do PIB · Banco Central</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-prim"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw" style="background:var(--good)"></span>Superávit — sobrou dinheiro antes dos juros</span>
+      <span class="i"><span class="sw" style="background:var(--critical)"></span>Déficit — faltou dinheiro antes dos juros</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Dívida bruta do governo geral</h3><span class="unit">% do PIB · fim de período · Banco Central</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-dbgg"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw-line" style="background:var(--s1)"></span>Dívida bruta do governo geral (União + INSS + estados + municípios)</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Os treze anos no azul, e a virada.</strong> De 2001 a 2013 o Brasil fechou <em>todos</em> os anos com superávit primário — o melhor foi 2005 (+3,8% do PIB). A virada é 2014 (−0,6%), primeiro déficit da série, e desde então só dois anos voltaram ao azul: 2021 (+0,7%) e 2022 (+1,3%). O pior resultado de toda a história fiscal brasileira é 2020: <strong>−9,4% do PIB</strong>, efeito do auxílio emergencial e da queda de arrecadação na pandemia.
+  </div>
+  <div class="note">
+    <strong>A dívida conta outra história.</strong> O mínimo do século é 2011 (51,3% do PIB) e o máximo é 2020 (86,9%). A queda de 2021–2022 para 71,7% veio menos de ajuste e mais de inflação alta corroendo o valor real da dívida e de PIB nominal inflado. Desde 2023 ela volta a subir: 73,8% → 76,3% → <strong>78,7% em 2025</strong>. E isso com superávit quase zerado — porque os juros pesam: em 2024 o setor público pagou o equivalente a cerca de <strong>8% do PIB</strong> em juros nominais, contra um déficit primário de só 0,4%.
+  </div>
+</section>
+
+<!-- ===================== INFLAÇÃO ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">04</div>
+    <h2>Em que anos a inflação estourou a meta</h2>
+    <p class="sub">O Brasil opera sob metas de inflação desde 1999. O que importa não é o IPCA isolado, mas o IPCA <strong>contra a meta e sua banda de tolerância</strong> — a faixa azul do gráfico, que muda de ano para ano. Estourar o teto obriga o presidente do Banco Central a escrever uma carta aberta ao ministro da Fazenda.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>IPCA contra a meta de inflação</h3><span class="unit">% no ano · IBGE / CMN</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-ipca"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw-line" style="background:var(--s2)"></span>IPCA efetivo</span>
+      <span class="i"><span class="sw" style="background:var(--band);border:1px solid var(--s1)"></span>Banda de tolerância da meta</span>
+      <span class="i"><span class="sw-line" style="background:var(--s1);opacity:.5"></span>Centro da meta</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Sete estouros do teto, um furo no piso.</strong> A meta foi descumprida por cima em <strong>2001, 2002, 2003, 2015, 2021, 2022 e 2024</strong>. O pior é 2002 (12,53% contra teto de 5,5%), no meio da crise de confiança da eleição. 2015 (10,67%) combinou realinhamento de preços administrados e câmbio. E 2017 é o caso oposto e único: o IPCA de <strong>2,95%</strong> ficou <em>abaixo</em> do piso de 3,0% — a primeira vez que o Brasil descumpriu a meta por inflação baixa demais. 2025 fechou em 4,26%, dentro do teto de 4,5%.
+  </div>
+</section>
+
+<!-- ===================== EMPREGO ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">05</div>
+    <h2>Em que anos foi mais fácil — e mais difícil — achar trabalho</h2>
+    <p class="sub">Aqui há uma quebra metodológica que impede comparação direta: até 2011 a medida usual era a Pesquisa Mensal de Emprego (6 regiões metropolitanas); de 2012 em diante é a PNAD Contínua (cobertura nacional). O gráfico mostra as duas séries <strong>separadas</strong>, sem emendá-las.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Taxa de desocupação — média anual</h3><span class="unit">% da força de trabalho · IBGE</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-desemp"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw-line" style="background:var(--s3)"></span>PME — 6 regiões metropolitanas (2002–2011)</span>
+      <span class="i"><span class="sw-line" style="background:var(--s1)"></span>PNAD Contínua — Brasil (2012–2025)</span>
+      <span class="i" style="color:var(--muted)">O intervalo entre as duas é proposital</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>O pior e o melhor.</strong> Na PNAD Contínua, o pico é 2020 (13,5%) e, antes da pandemia, 2017 (12,7%) — o desemprego já estava em dois dígitos desde 2016. O melhor ano é <strong>2025, com 5,6%</strong>, a menor média de toda a série iniciada em 2012, com população ocupada recorde de 103 milhões de pessoas. Vale notar o contraste: 2017 tinha a melhor inflação do século e o pior desemprego.
+  </div>
+</section>
+
+<!-- ===================== JUROS ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">06</div>
+    <h2>Quanto custou o dinheiro</h2>
+    <p class="sub">Selic no fim de cada ano e IPCA do ano na mesma escala — a distância entre as duas linhas é, aproximadamente, o juro real que o país pagou. É a variável que liga as duas seções anteriores: juro alto contém inflação e encarece a dívida ao mesmo tempo.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Selic (meta, fim de ano) e IPCA</h3><span class="unit">% ao ano · Banco Central / IBGE</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-juros"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw-line" style="background:var(--s1)"></span>Selic — meta no fim do ano</span>
+      <span class="i"><span class="sw-line" style="background:var(--s2)"></span>IPCA do ano</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Do 25% ao 2%, e de volta ao 15%.</strong> A Selic começa o século em 19% (2001), vai a 25% em 2002, cai até a mínima histórica de <strong>2,00% em 2020</strong> — o único biênio de juro real negativo da série (2020 e 2021) — e volta ao patamar de <strong>15,00% no fim de 2025</strong>, o maior desde 2006. Pelo cálculo Selic menos IPCA, o juro real de 2025 (≈ +10,7 p.p.) é o mais alto desde 2005.
+  </div>
+</section>
+
+<!-- ===================== EDUCAÇÃO ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">07</div>
+    <h2>Em que anos a educação foi melhor</h2>
+    <p class="sub">O Ideb combina desempenho no Saeb com fluxo escolar, em escala de 0 a 10, e é medido a cada dois anos desde 2005. É a única série deste painel que <strong>subiu de forma quase contínua em 20 anos</strong> — mas em ritmos muito diferentes entre as três etapas.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Ideb nacional por etapa</h3><span class="unit">escala 0–10 · bienal · Inep/MEC</span></div>
+    <div class="chart-scroll"><div class="ct-wrap" id="c-ideb"></div></div>
+    <div class="legend">
+      <span class="i"><span class="sw-line" style="background:var(--s1)"></span>Anos iniciais do fundamental (1º–5º)</span>
+      <span class="i"><span class="sw-line" style="background:var(--s2)"></span>Anos finais do fundamental (6º–9º)</span>
+      <span class="i"><span class="sw-line" style="background:var(--s3)"></span>Ensino médio</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>2025 é o melhor ano da educação básica brasileira já medido</strong> — recorde simultâneo nas três etapas: 6,3 nos anos iniciais, 5,3 nos anos finais e 4,5 no ensino médio. Mas o avanço é desigual: os anos iniciais ganharam <strong>+2,5 pontos</strong> desde 2005 e bateram a meta nacional; o ensino médio ganhou apenas <strong>+1,1 ponto</strong> em 20 anos e <em>nunca</em> alcançou sua meta (5,2 em 2025). Há dois tropeços na série: 2021 nos anos iniciais (5,8, efeito da pandemia sobre a alfabetização) e 2023 nos anos finais (5,0, queda de 0,1 frente a 2021).
+  </div>
+
+  <div class="two">
+    <div class="card" style="margin-top:0">
+      <div class="card-head"><h3>Ideb 2025 — metas nacionais batidas</h3><span class="unit">unidades da federação</span></div>
+      <div class="rank" id="r-metas" style="margin-top:12px;border:0"></div>
+      <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0">Nos anos iniciais, <strong>todas as 27 UFs melhoraram</strong> em relação a 2023 e 18 alcançaram a meta de 6,0. Nos anos finais, só 5 chegaram a 5,5: Ceará, Goiás, Minas Gerais, Paraná e São Paulo. No ensino médio, <strong>nenhuma</strong> atingiu 5,2.</p>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div class="card-head"><h3>A distância entre os estados</h3><span class="unit">Ideb 2025</span></div>
+      <div class="tscroll" style="margin-top:12px">
+        <table>
+          <thead><tr><th class="l">UF</th><th>Iniciais</th><th>Finais</th><th>Médio</th></tr></thead>
+          <tbody id="tb-uf"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0">O <strong>Paraná</strong> lidera as três etapas — algo que nenhum outro estado fez — e é o único acima de 5,0 no ensino médio. Na ponta oposta, <strong>Amapá</strong> tem o pior resultado dos anos iniciais (5,5) e a <strong>Bahia</strong> a última colocação nos anos finais. A diferença entre o melhor e o pior estado nos anos iniciais (7,0 contra 5,5) equivale a cerca de seis anos de progresso nacional.</p>
+    </div>
+  </div>
+
+  <div class="gap">
+    <strong>Lacuna declarada nesta seção.</strong> A tabela por estado traz apenas os valores que consegui confirmar em fonte publicada nesta sessão. A matriz completa das 27 UFs × 3 etapas × 11 edições está no Inep e no QEdu, mas a política de rede deste ambiente bloqueou o acesso direto a <span style="font-family:var(--mono);font-size:12px">inep.gov.br</span>, <span style="font-family:var(--mono);font-size:12px">gov.br</span>, <span style="font-family:var(--mono);font-size:12px">ibge.gov.br</span> e <span style="font-family:var(--mono);font-size:12px">qedu.org.br</span>. Preferi deixar as células em branco a preenchê-las de memória. Duas fontes divergiram sobre a nota do Amapá no ensino médio (3,8 ou 4,0), por isso ela não aparece.
+  </div>
+</section>
+
+<!-- ===================== INDICE DO ANO ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">08</div>
+    <h2>Os 25 anos, do melhor ao pior</h2>
+    <p class="sub">Um índice composto para responder à pergunta "qual foi o melhor ano" com um número só. Combina três coisas que puxam em direções diferentes: <strong>crescimento do PIB</strong> (peso 2), <strong>desvio do IPCA em relação ao centro da meta</strong> (peso 1, invertido) e <strong>resultado primário</strong> (peso 1). Cada componente é padronizado (z-score) sobre os 25 anos e a soma ponderada é reescalada de 0 a 100.</p>
+  </div>
+
+  <div class="rank" id="r-anos"></div>
+
+  <div class="note">
+    <strong>O que o índice mostra.</strong> Os seis primeiros lugares são todos do período 2004–2010 — crescimento forte com superávit primário de mais de 3% do PIB. No fundo, 2020 (0,0) e 2015 (0,7) empatam como catástrofes de naturezas opostas: 2020 foi um choque externo com resposta fiscal deliberada; 2015 foi retração com inflação de dois dígitos e déficit. 2016 (15,7) é o terceiro pior.
+  </div>
+  <div class="note">
+    <strong>O que o índice não captura.</strong> Ele ignora desemprego (a quebra metodológica de 2012 inviabiliza padronizar a série inteira), dívida, desigualdade e educação. E ele não atribui causas: o resultado de um ano depende de safra, preço de commodity, ciclo global e decisões de governos anteriores, não só de quem assinava os decretos. Leia-o como um retrato do ano, não como uma nota para o presidente.
+  </div>
+</section>
+
+<!-- ===================== PLACAR POR GOVERNO ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">09</div>
+    <h2>Placar por governo</h2>
+    <p class="sub">As mesmas séries, agora agregadas por mandato. <strong>PIB acumulado</strong> é o efeito composto de todos os anos do governo; a dívida é a variação entre o fim do ano anterior à posse e o fim do último ano.</p>
+  </div>
+
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th class="l">Governo</th><th>Anos</th><th>PIB médio</th><th>PIB acum.</th>
+        <th>IPCA médio</th><th>Desemp. médio</th><th>Primário médio</th><th>Dívida</th><th>Índice médio</th>
+      </tr></thead>
+      <tbody id="tb-pres"></tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Leitura honesta do placar.</strong> Lula I–II lidera com folga em crescimento (+4,1% ao ano, +37,5% acumulado) e é o único governo que combinou superávit primário médio acima de 3% do PIB com dívida em queda — mas pegou o boom de commodities e a maior expansão global do século. Dilma tem o pior PIB médio (+0,4%) e a maior alta de dívida (+18,5 p.p.). Temer tem a melhor inflação média (3,35%) com o pior desemprego. Bolsonaro tem a pandemia dentro do mandato e, por isso, o pior primário médio (−2,05%) com dívida caindo no fim por efeito inflacionário. Lula III tem o menor desemprego médio da série (6,7%) e crescimento de 3% ao ano, com dívida subindo e primário negativo nos três anos.
+  </div>
+  <div class="note">
+    Mandatos de 2 anos (FHC, Temer) e de 8 anos (Lula I–II) não são comparáveis em pé de igualdade: médias de dois anos são muito mais sensíveis a um ano atípico. E nenhum governo escolhe o cenário externo que herda.
+  </div>
+</section>
+
+<!-- ===================== SOCIAL ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">10</div>
+    <h2>Pobreza, desigualdade e desenvolvimento humano</h2>
+    <p class="sub">Séries mais curtas e com medição menos frequente, mas indispensáveis: crescimento do PIB não diz, por si, o que aconteceu com a base da pirâmide.</p>
+  </div>
+
+  <div class="tiles" style="margin-top:0">
+    <div class="tile"><div class="k">Extrema pobreza · 2012</div><div class="v">6,6%</div><div class="d">da população</div></div>
+    <div class="tile"><div class="k">Extrema pobreza · 2021</div><div class="v neg">9,0%</div><div class="d">pico — 18,9 milhões de pessoas</div></div>
+    <div class="tile"><div class="k">Extrema pobreza · 2024</div><div class="v pos">3,5%</div><div class="d">menor da série desde 2012</div></div>
+    <div class="tile"><div class="k">Gini · pico</div><div class="v">0,545</div><div class="d">2018 — maior desigualdade da série</div></div>
+    <div class="tile"><div class="k">Gini · 2024</div><div class="v pos">0,506</div><div class="d">menor da série desde 2012</div></div>
+    <div class="tile"><div class="k">IDH · 2023</div><div class="v">0,786</div><div class="d">84º lugar entre 193 países</div></div>
+  </div>
+
+  <div class="note">
+    <strong>A curva em V da extrema pobreza.</strong> A linha usada pelo IBGE é a do Banco Mundial: US$ 2,15 PPC por dia, cerca de R$ 209 por mês. O indicador cai até 2019, dispara em 2021 para 9,0% — o auxílio emergencial havia sido reduzido e a inflação de alimentos corria a dois dígitos — e depois desaba: 5,9% (2022), 4,4% (2023) e <strong>3,5% (2024)</strong>. Em 2023, 8,7 milhões de pessoas saíram da pobreza e da extrema pobreza em um único ano. O Gini segue o mesmo movimento com atraso: máximo em 2018 (0,545), mínimo em 2024 (0,506).
+  </div>
+</section>
+
+<!-- ===================== TABELA ===================== -->
+<section id="tabela">
+  <div class="shead">
+    <div class="qnum">11</div>
+    <h2>A tabela inteira</h2>
+    <p class="sub">Todas as séries anuais, em um lugar — é também a versão acessível de todos os gráficos acima. Clique num cabeçalho para ordenar.</p>
+  </div>
+
+  <div class="tscroll">
+    <table>
+      <thead><tr id="th-main"></tr></thead>
+      <tbody id="tb-main"></tbody>
+    </table>
+  </div>
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button class="btn" id="btn-csv">Copiar tabela em CSV</button>
+    <span id="csv-msg" style="font-size:12px;color:var(--muted)"></span>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Ideb nacional — série completa</h3><span class="unit">escala 0–10 · Inep/MEC</span></div>
+    <div class="tscroll" style="margin-top:8px;border:0">
+      <table>
+        <thead><tr id="th-ideb"></tr></thead>
+        <tbody id="tb-ideb"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== METODOLOGIA ===================== -->
+<section>
+  <div class="shead">
+    <div class="qnum">12</div>
+    <h2>Fontes, precisão e o que não confiar</h2>
+    <p class="sub">Cada série abaixo traz a fonte e o grau de verificação que consegui fazer <em>nesta sessão</em>. Isso importa: dados macroeconômicos são revisados, e revisão muda conclusão.</p>
+  </div>
+
+  <ul class="src">
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>PIB, variação real anual</strong> — IBGE, Contas Nacionais. Confirmados em busca: 2001–2006, 2016, 2022 (3,0%), 2023 (3,2%), 2024 (3,4%) e 2025 (2,3%, quinto ano seguido de alta, PIB de R$ 12,7 trilhões). Os demais anos são os valores consolidados do IBGE após a revisão de referência — que alterou, entre outros, 2020 (de −4,1% para −3,3%) e 2021 (para +4,8%).</div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>Resultado primário</strong> — Banco Central, setor público consolidado, série recalculada desde 2001 com a exclusão de Petrobras e Eletrobras. Confirmados: 2023 (−R$ 249,1 bi, −2,28% do PIB), 2024 (−R$ 47,6 bi, −0,40%) e 2025 (−R$ 55,0 bi, −0,43%).</div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>Dívida bruta do governo geral</strong> — Banco Central, fim de período. Confirmados: 2024 (76,3%) e 2025 (78,7%, alta de 2,4 p.p., R$ 10 trilhões). A série começa em 2006 no painel porque a metodologia anterior a 2008 não é comparável; os valores de 2006–2023 são os consolidados do BC e estão sujeitos a revisão de ±0,5 p.p. quando o PIB nominal é recalculado.</div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>Desocupação</strong> — IBGE. PNAD Contínua para 2012–2025 (2024: 6,6%; 2025: 5,6%, mínima da série, subutilização de 14,5%, ocupação de 103 milhões — todos confirmados); PME, 6 regiões metropolitanas, para 2002–2011. <em>As duas não se emendam.</em></div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>Ideb</strong> — Inep/MEC. Série bienal 2005–2025; a edição 2025 foi divulgada em 05/08/2026 com recorde nas três etapas (6,3 / 5,3 / 4,5) e metas nacionais de 6,0 / 5,5 / 5,2. Valores por UF confirmados: Paraná 7,0 / 5,9 / 5,1; Ceará e Goiás 5,7 nos anos finais; Minas 5,5; Espírito Santo 5,4 / 4,9; Goiás 5,0 no médio; Piauí 4,9; Amapá 5,5 / 4,6; Rio Grande do Norte 3,9 no médio.</div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>IPCA</strong> — IBGE. 2025 confirmado (4,26%). Metas e bandas de tolerância conforme resoluções do CMN: ±2,0 p.p. até 2002, ±2,5 p.p. em 2003–2005, ±2,0 p.p. em 2006–2016, ±1,5 p.p. de 2017 em diante; centro caindo de 4,5% (2006–2018) para 3,0% (2024–2025).</div></li>
+    <li><span class="st" style="color:var(--good)">✔</span><div><strong>Pobreza, Gini e IDH</strong> — IBGE (Síntese de Indicadores Sociais, linha de US$ 2,15 PPC/dia) e PNUD. Extrema pobreza confirmada para 2012, 2021, 2022, 2023 e 2024; Gini para 2012, 2018 e 2024; IDH de 0,786 referente a 2023, publicado no Relatório de Desenvolvimento Humano 2025.</div></li>
+    <li><span class="st" style="color:var(--warning)">~</span><div><strong>Selic e câmbio</strong> — Banco Central. Selic é a meta definida pelo Copom vigente no fim de cada ano (2025: 15,00%). O câmbio é média anual arredondada e entra apenas como contexto; o valor de 2025 é aproximado. Não reconferi ano a ano nesta sessão.</div></li>
+    <li><span class="st" style="color:var(--critical)">⚠</span><div><strong>Ideb por estado, matriz completa</strong> — não obtida. A rede deste ambiente bloqueia os domínios oficiais; só o allowlist de desenvolvimento passa. Células em branco na tabela por UF são lacunas reais, não zeros.</div></li>
+    <li><span class="st" style="color:var(--critical)">⚠</span><div><strong>Resultado nominal e juros pagos</strong> — série completa não incluída. Confirmei apenas 2023 (−8,84% do PIB) e 2024 (−8,45%, o que implica cerca de 8,0% do PIB em juros nominais). Preferi não publicar a série inteira sem conferência.</div></li>
+  </ul>
+
+  <div class="note">
+    <strong>O aviso que vale para todo o painel.</strong> Atribuir um número macroeconômico a um presidente é uma simplificação. Há defasagem (a política de um ano aparece no outro), há herança (o Orçamento de 2003 foi escrito em 2002), há choque externo (2009 e 2020 não foram decisões brasileiras) e há ciclo de commodities — o minério e a soja explicam parte grande de 2004–2010 e de 2024–2025. Este levantamento organiza os dados <em>por</em> governo; ele não prova causalidade <em>de</em> governo.
+  </div>
+</section>
+
+<footer>
+  Levantamento fechado em 27 de setembro de 2026. Fontes: IBGE (Contas Nacionais, IPCA, PNAD Contínua, PME, Síntese de Indicadores Sociais), Banco Central do Brasil (estatísticas fiscais, dívida bruta, Selic), Inep/MEC (Ideb/Saeb), CMN (metas de inflação), PNUD (IDH).
+  Índice composto e médias por governo são cálculos próprios, descritos nas seções 08 e 09.
+</footer>
+</div>
+
+<script>
+/* ============================ DADOS ============================ */
+const PRES = [
+  {id:'fhc',    nome:'Fernando Henrique Cardoso', curto:'FHC',       part:'PSDB',  ini:2001, fim:2002, cor:'var(--pres-fhc)'},
+  {id:'lula12', nome:'Luiz Inácio Lula da Silva', curto:'Lula I–II', part:'PT',    ini:2003, fim:2010, cor:'var(--pres-lula12)'},
+  {id:'dilma',  nome:'Dilma Rousseff',            curto:'Dilma',     part:'PT',    ini:2011, fim:2016, cor:'var(--pres-dilma)'},
+  {id:'temer',  nome:'Michel Temer',              curto:'Temer',     part:'MDB',   ini:2017, fim:2018, cor:'var(--pres-temer)'},
+  {id:'bolso',  nome:'Jair Bolsonaro',            curto:'Bolsonaro', part:'PSL',   ini:2019, fim:2022, cor:'var(--pres-bolso)'},
+  {id:'lula3',  nome:'Luiz Inácio Lula da Silva', curto:'Lula III',  part:'PT',    ini:2023, fim:2025, cor:'var(--pres-lula3)'}
+];
+const PMAP = {}; PRES.forEach(p=>PMAP[p.id]=p);
+
+// ano, gov, pib%, ipca%, meta, tol, desemp, fonteDesemp, primario %PIB, dbgg %PIB, selic %, cambio
+const D = [
+  {a:2001,g:'fhc',    pib: 1.4, ipca: 7.67, meta:4.00, tol:2.0, des:null, df:null,   pri: 3.20, dbgg:null, sel:19.00, cam:2.35},
+  {a:2002,g:'fhc',    pib: 3.1, ipca:12.53, meta:3.50, tol:2.0, des:11.7, df:'PME',  pri: 3.20, dbgg:null, sel:25.00, cam:2.92},
+  {a:2003,g:'lula12', pib: 1.1, ipca: 9.30, meta:4.00, tol:2.5, des:12.3, df:'PME',  pri: 3.30, dbgg:null, sel:16.50, cam:3.08},
+  {a:2004,g:'lula12', pib: 5.8, ipca: 7.60, meta:5.50, tol:2.5, des:11.5, df:'PME',  pri: 3.70, dbgg:null, sel:17.75, cam:2.93},
+  {a:2005,g:'lula12', pib: 3.2, ipca: 5.69, meta:4.50, tol:2.5, des: 9.8, df:'PME',  pri: 3.80, dbgg:null, sel:18.00, cam:2.43},
+  {a:2006,g:'lula12', pib: 4.0, ipca: 3.14, meta:4.50, tol:2.0, des:10.0, df:'PME',  pri: 3.20, dbgg:55.5, sel:13.25, cam:2.18},
+  {a:2007,g:'lula12', pib: 6.1, ipca: 4.46, meta:4.50, tol:2.0, des: 9.3, df:'PME',  pri: 3.30, dbgg:56.1, sel:11.25, cam:1.95},
+  {a:2008,g:'lula12', pib: 5.1, ipca: 5.90, meta:4.50, tol:2.0, des: 7.9, df:'PME',  pri: 3.40, dbgg:56.0, sel:13.75, cam:1.83},
+  {a:2009,g:'lula12', pib:-0.1, ipca: 4.31, meta:4.50, tol:2.0, des: 8.1, df:'PME',  pri: 1.90, dbgg:59.2, sel: 8.75, cam:2.00},
+  {a:2010,g:'lula12', pib: 7.5, ipca: 5.91, meta:4.50, tol:2.0, des: 6.7, df:'PME',  pri: 2.60, dbgg:51.8, sel:10.75, cam:1.76},
+  {a:2011,g:'dilma',  pib: 4.0, ipca: 6.50, meta:4.50, tol:2.0, des: 6.0, df:'PME',  pri: 2.90, dbgg:51.3, sel:11.00, cam:1.67},
+  {a:2012,g:'dilma',  pib: 1.9, ipca: 5.84, meta:4.50, tol:2.0, des: 7.4, df:'PNADC',pri: 2.20, dbgg:53.7, sel: 7.25, cam:1.95},
+  {a:2013,g:'dilma',  pib: 3.0, ipca: 5.91, meta:4.50, tol:2.0, des: 7.2, df:'PNADC',pri: 1.70, dbgg:51.5, sel:10.00, cam:2.16},
+  {a:2014,g:'dilma',  pib: 0.5, ipca: 6.41, meta:4.50, tol:2.0, des: 6.8, df:'PNADC',pri:-0.60, dbgg:56.3, sel:11.75, cam:2.35},
+  {a:2015,g:'dilma',  pib:-3.5, ipca:10.67, meta:4.50, tol:2.0, des: 8.5, df:'PNADC',pri:-1.90, dbgg:65.5, sel:14.25, cam:3.33},
+  {a:2016,g:'dilma',  pib:-3.3, ipca: 6.29, meta:4.50, tol:2.0, des:11.5, df:'PNADC',pri:-2.50, dbgg:69.8, sel:13.75, cam:3.48, tr:true},
+  {a:2017,g:'temer',  pib: 1.3, ipca: 2.95, meta:4.50, tol:1.5, des:12.7, df:'PNADC',pri:-1.70, dbgg:73.7, sel: 7.00, cam:3.19},
+  {a:2018,g:'temer',  pib: 1.8, ipca: 3.75, meta:4.50, tol:1.5, des:12.3, df:'PNADC',pri:-1.60, dbgg:75.3, sel: 6.50, cam:3.65},
+  {a:2019,g:'bolso',  pib: 1.2, ipca: 4.31, meta:4.25, tol:1.5, des:11.9, df:'PNADC',pri:-0.80, dbgg:74.4, sel: 4.50, cam:3.95},
+  {a:2020,g:'bolso',  pib:-3.3, ipca: 4.52, meta:4.00, tol:1.5, des:13.5, df:'PNADC',pri:-9.40, dbgg:86.9, sel: 2.00, cam:5.16},
+  {a:2021,g:'bolso',  pib: 4.8, ipca:10.06, meta:3.75, tol:1.5, des:13.2, df:'PNADC',pri: 0.70, dbgg:78.3, sel: 9.25, cam:5.40},
+  {a:2022,g:'bolso',  pib: 3.0, ipca: 5.79, meta:3.50, tol:1.5, des: 9.3, df:'PNADC',pri: 1.30, dbgg:71.7, sel:13.75, cam:5.17},
+  {a:2023,g:'lula3',  pib: 3.2, ipca: 4.62, meta:3.25, tol:1.5, des: 7.8, df:'PNADC',pri:-2.28, dbgg:73.8, sel:11.75, cam:5.00},
+  {a:2024,g:'lula3',  pib: 3.4, ipca: 4.83, meta:3.00, tol:1.5, des: 6.6, df:'PNADC',pri:-0.40, dbgg:76.3, sel:12.25, cam:5.39},
+  {a:2025,g:'lula3',  pib: 2.3, ipca: 4.26, meta:3.00, tol:1.5, des: 5.6, df:'PNADC',pri:-0.43, dbgg:78.7, sel:15.00, cam:5.45}
+];
+
+const IDEB = {
+  anos:[2005,2007,2009,2011,2013,2015,2017,2019,2021,2023,2025],
+  ai:  [3.8, 4.2, 4.6, 5.0, 5.2, 5.5, 5.8, 5.9, 5.8, 6.0, 6.3],
+  af:  [3.5, 3.8, 4.0, 4.1, 4.2, 4.5, 4.7, 4.9, 5.1, 5.0, 5.3],
+  em:  [3.4, 3.5, 3.6, 3.7, 3.7, 3.7, 3.8, 4.2, 4.2, 4.3, 4.5],
+  metas2025:{ai:6.0, af:5.5, em:5.2}
+};
+
+// Ideb 2025 por UF — somente valores confirmados em fonte publicada. null = lacuna.
+const UF = [
+  {uf:'Paraná',              ai:7.0, af:5.9, em:5.1},
+  {uf:'Ceará',               ai:null, af:5.7, em:null},
+  {uf:'Goiás',               ai:null, af:5.7, em:5.0},
+  {uf:'Minas Gerais',        ai:null, af:5.5, em:null},
+  {uf:'Espírito Santo',      ai:null, af:5.4, em:4.9},
+  {uf:'Piauí',               ai:null, af:null, em:4.9},
+  {uf:'Rio Grande do Norte', ai:null, af:null, em:3.9},
+  {uf:'Amapá',               ai:5.5, af:4.6, em:null}
+];
+
+/* ============================ UTIL ============================ */
+const NB = '‑';
+const br = n => String(n).replace('.', ',');
+const f1 = (n,d=1) => n==null ? '—' : n.toFixed(d).replace('.', ',');
+const fs = (n,d=1) => n==null ? '—' : (n>0?'+':(n<0?'−':'')) + Math.abs(n).toFixed(d).replace('.', ',');
+const fneg = (n,d=1) => n==null ? '—' : (n<0?'−':'') + Math.abs(n).toFixed(d).replace('.', ',');
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k]!=null) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function niceTicks(lo, hi, count){
+  const span = hi-lo; if (span<=0) return [lo];
+  const raw = span/count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw/mag;
+  const step = (norm<=1?1:norm<=2?2:norm<=2.5?2.5:norm<=5?5:10)*mag;
+  const out=[]; for(let v=Math.ceil(lo/step)*step; v<=hi+1e-9; v+=step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/* shared tooltip over year columns */
+function addTip(wrap, svg, n, xAt, bandW, plotTop, plotH, render){
+  const tip = document.createElement('div');
+  tip.className = 'tip'; wrap.appendChild(tip);
+  const g = el('g', {}, svg);
+  const cross = el('line', {x1:0,x2:0,y1:plotTop,y2:plotTop+plotH,stroke:'var(--axis)','stroke-width':1,opacity:0}, g);
+  for (let i=0;i<n;i++){
+    const r = el('rect', {x:xAt(i)-bandW/2, y:plotTop, width:bandW, height:plotH, class:'hit'}, g);
+    r.addEventListener('mouseenter', ()=>{
+      tip.innerHTML = render(i);
+      tip.style.opacity = 1;
+      cross.setAttribute('opacity', .5);
+      cross.setAttribute('x1', xAt(i)); cross.setAttribute('x2', xAt(i));
+      const box = svg.getBoundingClientRect();
+      const px = (xAt(i)/svg.viewBox.baseVal.width)*box.width;
+      const tw = 150;
+      tip.style.left = Math.max(2, Math.min(box.width - tw - 2, px - tw/2)) + 'px';
+      tip.style.top = '4px';
+    });
+    r.addEventListener('mouseleave', ()=>{ tip.style.opacity=0; cross.setAttribute('opacity',0); });
+  }
+}
+
+/* ============================ 1. TIMELINE ============================ */
+(function(){
+  const W=880, H=92, padL=8, padR=8;
+  const wrap = document.getElementById('c-timeline');
+  const svg = el('svg', {viewBox:`0 0 ${W} ${H}`, role:'img',
+    'aria-label':'Linha do tempo dos governos de 2001 a 2025'});
+  wrap.appendChild(svg);
+  const y0=2001, y1=2025, nY=y1-y0+1;
+  const iw = (W-padL-padR)/nY;
+  const xa = y => padL + (y-y0)*iw;
+
+  PRES.forEach(p=>{
+    const x = xa(p.ini), w = (p.fim-p.ini+1)*iw - 2;
+    el('rect', {x:x+1, y:20, width:w, height:34, rx:2, fill:p.cor}, svg);
+    const label = `${p.curto}`;
+    if (w > 64){
+      const t = el('text', {x:x+1+w/2, y:41, class:'preslab', 'text-anchor':'middle'}, svg);
+      t.textContent = label;
+    } else {
+      const t = el('text', {x:x+1+w/2, y:14, class:'preslab-out', 'text-anchor':'middle'}, svg);
+      t.textContent = label;
+    }
+    const yr = el('text', {x:x+1+w/2, y:68, class:'tick', 'text-anchor':'middle'}, svg);
+    yr.textContent = p.ini===p.fim ? p.ini : `${p.ini}–${p.fim}`;
+    const pt = el('text', {x:x+1+w/2, y:81, class:'tick', 'text-anchor':'middle'}, svg);
+    pt.textContent = `${p.fim-p.ini+1} ${p.fim-p.ini+1===1?'ano':'anos'}`;
+  });
+  // transition marker for 2016
+  const xt = xa(2016)+iw;
+  el('line', {x1:xt, x2:xt, y1:16, y2:58, stroke:'var(--ink)', 'stroke-width':1.5, 'stroke-opacity':.55}, svg);
+  const tm = el('text', {x:xt-3, y:12, class:'anno', 'text-anchor':'end'}, svg);
+  tm.textContent = '31/08/2016 · Temer assume';
+
+  const lg = document.getElementById('lg-pres');
+  lg.innerHTML = PRES.map(p =>
+    `<span class="i"><span class="sw" style="background:${p.cor}"></span>${p.curto} — ${p.nome} (${p.part})</span>`
+  ).join('');
+})();
+
+/* ============================ generic: president band ============================ */
+function presBand(svg, xAt, yTop, h){
+  const g = el('g', {}, svg);
+  PRES.forEach(p=>{
+    const i0 = D.findIndex(r=>r.a===p.ini), i1 = D.findIndex(r=>r.a===p.fim);
+    if (i0<0) return;
+    const bw = (xAt(1)-xAt(0));
+    const x = xAt(i0)-bw/2+1, w = (i1-i0+1)*bw-2;
+    el('rect', {x, y:yTop, width:w, height:h, rx:1.5, fill:p.cor}, g);
+    if (w>58){
+      const t = el('text', {x:x+w/2, y:yTop+h/2+3.4, class:'preslab', 'text-anchor':'middle'}, g);
+      t.textContent = p.curto;
+    }
+  });
+}
+
+/* ============================ 2. BAR CHARTS (PIB, primário) ============================ */
+function barChart(mountId, key, opts){
+  const W=880, padL=42, padR=16, padT=16, axisH=18, bandH=15, padB=axisH+bandH+8;
+  const plotH = opts.h || 250, H = padT+plotH+padB;
+  const wrap = document.getElementById(mountId);
+  const svg = el('svg', {viewBox:`0 0 ${W} ${H}`, role:'img', 'aria-label':opts.aria});
+  wrap.appendChild(svg);
+  const n=D.length, iw=(W-padL-padR)/n, xAt=i=>padL+iw*(i+0.5);
+  const vals = D.map(r=>r[key]).filter(v=>v!=null);
+  let lo=Math.min(0,...vals), hi=Math.max(0,...vals);
+  const pad=(hi-lo)*0.10; lo-=pad; hi+=pad;
+  const yAt = v => padT + plotH - ((v-lo)/(hi-lo))*plotH;
+
+  niceTicks(lo,hi,5).forEach(t=>{
+    el('line',{x1:padL,x2:W-padR,y1:yAt(t),y2:yAt(t),class: t===0?'zeroline':'gridline'},svg);
+    const lb=el('text',{x:padL-7,y:yAt(t)+3.4,class:'tick-y','text-anchor':'end'},svg);
+    lb.textContent=fneg(t, Math.abs(t)<1&&t!==0?1:0);
+  });
+
+  const bw = Math.min(iw-6, 22);
+  D.forEach((r,i)=>{
+    const v=r[key]; if (v==null) return;
+    const pos=v>=0, y=pos?yAt(v):yAt(0), hh=Math.max(1.5, Math.abs(yAt(v)-yAt(0)));
+    el('rect',{x:xAt(i)-bw/2, y, width:bw, height:hh, class:pos?'bar-pos':'bar-neg',
+      rx:2.5, 'aria-hidden':'true'},svg);
+    // square off the baseline end
+    el('rect',{x:xAt(i)-bw/2, y: pos? y+hh-3 : y, width:bw, height:3,
+      class:pos?'bar-pos':'bar-neg'},svg);
+    if (opts.label && opts.label.includes(r.a)){
+      const t=el('text',{x:xAt(i), y: pos? yAt(v)-6 : yAt(v)+13, class:'dlabel','text-anchor':'middle'},svg);
+      t.textContent=fs(v, opts.dec||1);
+    }
+  });
+
+  // x axis years
+  D.forEach((r,i)=>{
+    const t=el('text',{x:xAt(i), y:padT+plotH+13, class:'tick','text-anchor':'middle'},svg);
+    t.textContent = (r.a%5===0||i===0||i===n-1) ? String(r.a).slice(2) : String(r.a).slice(2);
+  });
+  presBand(svg, xAt, padT+plotH+axisH, bandH);
+
+  addTip(wrap, svg, n, xAt, iw, padT, plotH, i=>{
+    const r=D[i], p=PMAP[r.g];
+    return `<div class="ty">${r.a}</div>
+      <div class="tr"><span>${opts.tipLabel}</span><b>${fs(r[key],opts.dec||1)}${opts.unit||'%'}</b></div>
+      <div class="tp">${p.curto}${r.tr?' → Temer':''}</div>`;
+  });
+}
+
+barChart('c-pib','pib',{aria:'Variação real do PIB por ano, 2001 a 2025',
+  label:[2010,2009,2015,2016,2020,2025], tipLabel:'PIB', h:250});
+barChart('c-prim','pri',{aria:'Resultado primário do setor público como % do PIB, 2001 a 2025',
+  label:[2005,2014,2020,2023,2025], tipLabel:'Primário', unit:'% do PIB', h:230, dec:1});
+
+/* ============================ 3. LINE CHARTS ============================ */
+function lineChart(mountId, cfg){
+  const W=880, padL=42, padR=44, padT=18, axisH=18;
+  const bandH = cfg.band ? 15 : 0;
+  const plotH = cfg.h || 230, H = padT+plotH+axisH+bandH+8;
+  const wrap = document.getElementById(mountId);
+  const svg = el('svg', {viewBox:`0 0 ${W} ${H}`, role:'img','aria-label':cfg.aria});
+  wrap.appendChild(svg);
+  const xs = cfg.x, n = xs.length, iw=(W-padL-padR)/n, xAt=i=>padL+iw*(i+0.5);
+  let allv = [];
+  cfg.series.forEach(s=>s.v.forEach(v=>{ if(v!=null) allv.push(v); }));
+  if (cfg.extra) cfg.extra.forEach(v=>{ if(v!=null) allv.push(v); });
+  let lo = cfg.lo!=null?cfg.lo:Math.min(...allv), hi = cfg.hi!=null?cfg.hi:Math.max(...allv);
+  const pad=(hi-lo)*0.12; if(cfg.lo==null) lo-=pad; if(cfg.hi==null) hi+=pad;
+  const yAt = v => padT + plotH - ((v-lo)/(hi-lo))*plotH;
+
+  niceTicks(lo,hi,5).forEach(t=>{
+    el('line',{x1:padL,x2:W-padR,y1:yAt(t),y2:yAt(t),class:t===0?'zeroline':'gridline'},svg);
+    const lb=el('text',{x:padL-7,y:yAt(t)+3.4,class:'tick-y','text-anchor':'end'},svg);
+    lb.textContent=fneg(t,0);
+  });
+
+  if (cfg.beforeSeries) cfg.beforeSeries(svg, xAt, yAt, iw);
+
+  cfg.series.forEach(s=>{
+    // split into contiguous runs so gaps are real gaps
+    let run=[];
+    const flush=()=>{
+      if (run.length>1){
+        el('path',{d:'M'+run.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L'),
+          class:s.cls},svg);
+      } else if (run.length===1){
+        el('circle',{cx:run[0][0],cy:run[0][1],r:3,class:s.dot},svg);
+      }
+      run=[];
+    };
+    s.v.forEach((v,i)=>{ if(v==null){flush();} else run.push([xAt(i),yAt(v)]); });
+    flush();
+    // endpoint markers + direct label
+    const lastI = s.v.reduce((acc,v,i)=>v!=null?i:acc,-1);
+    const firstI = s.v.findIndex(v=>v!=null);
+    [firstI,lastI].forEach(i=>{ if(i>=0) el('circle',{cx:xAt(i),cy:yAt(s.v[i]),r:4,class:s.dot},svg); });
+    if (lastI>=0 && s.name){
+      const t=el('text',{x:xAt(lastI)+9,y:yAt(s.v[lastI])+3.6,class:'dlabel'},svg);
+      t.textContent=f1(s.v[lastI], s.dec==null?1:s.dec);
+    }
+    (s.marks||[]).forEach(m=>{
+      const i = xs.indexOf(m);
+      if (i<0 || s.v[i]==null) return;
+      el('circle',{cx:xAt(i),cy:yAt(s.v[i]),r:4,class:s.dot},svg);
+      const t=el('text',{x:xAt(i),y:yAt(s.v[i])-9,class:'dlabel','text-anchor':'middle'},svg);
+      t.textContent=f1(s.v[i], s.dec==null?1:s.dec);
+    });
+  });
+
+  if (cfg.afterSeries) cfg.afterSeries(svg, xAt, yAt, iw);
+
+  xs.forEach((x,i)=>{
+    const t=el('text',{x:xAt(i),y:padT+plotH+13,class:'tick','text-anchor':'middle'},svg);
+    t.textContent = cfg.xlab ? cfg.xlab(x) : String(x).slice(2);
+  });
+  if (cfg.band) presBand(svg, xAt, padT+plotH+axisH, bandH);
+
+  addTip(wrap, svg, n, xAt, iw, padT, plotH, cfg.tip);
+}
+
+/* --- dívida bruta --- */
+lineChart('c-dbgg',{
+  aria:'Dívida bruta do governo geral em % do PIB, 2006 a 2025',
+  x:D.map(r=>r.a), h:210, band:true,
+  series:[{v:D.map(r=>r.dbgg), cls:'lineA', dot:'dotA', name:'DBGG', marks:[2011,2020,2016]}],
+  tip:i=>{
+    const r=D[i];
+    return `<div class="ty">${r.a}</div>
+      <div class="tr"><span>Dívida bruta</span><b>${f1(r.dbgg)}% do PIB</b></div>
+      <div class="tr"><span>Primário</span><b>${fs(r.pri)}%</b></div>
+      <div class="tp">${PMAP[r.g].curto}</div>`;
+  }
+});
+
+/* --- IPCA + meta band --- */
+lineChart('c-ipca',{
+  aria:'IPCA anual contra a banda de tolerância da meta de inflação, 2001 a 2025',
+  x:D.map(r=>r.a), h:240, band:true, lo:0,
+  extra:D.map(r=>r.meta+r.tol).concat(D.map(r=>r.meta-r.tol)),
+  beforeSeries:(svg,xAt,yAt,iw)=>{
+    // stepped tolerance band
+    let up=[], dn=[];
+    D.forEach((r,i)=>{
+      const x0=xAt(i)-iw/2, x1=xAt(i)+iw/2;
+      up.push([x0,yAt(r.meta+r.tol)],[x1,yAt(r.meta+r.tol)]);
+      dn.push([x0,yAt(Math.max(0,r.meta-r.tol))],[x1,yAt(Math.max(0,r.meta-r.tol))]);
+    });
+    const d='M'+up.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L')
+          +'L'+dn.reverse().map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L')+'Z';
+    el('path',{d,class:'metaband'},svg);
+    let ct=[];
+    D.forEach((r,i)=>{ const x0=xAt(i)-iw/2, x1=xAt(i)+iw/2;
+      ct.push([x0,yAt(r.meta)],[x1,yAt(r.meta)]); });
+    el('path',{d:'M'+ct.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L'),class:'metaline'},svg);
+  },
+  series:[{v:D.map(r=>r.ipca), cls:'lineB', dot:'dotB', name:'IPCA', dec:2, marks:[2002,2015,2017,2021]}],
+  afterSeries:(svg,xAt,yAt,iw)=>{
+    const i=D.findIndex(r=>r.a===2017);
+    const t=el('text',{x:xAt(i)+8,y:yAt(2.95)+16,class:'anno'},svg);
+    t.textContent='abaixo do piso';
+  },
+  tip:i=>{
+    const r=D[i], ceil=r.meta+r.tol, st = r.ipca>ceil?'estourou o teto':(r.ipca<r.meta-r.tol?'abaixo do piso':'dentro da banda');
+    return `<div class="ty">${r.a}</div>
+      <div class="tr"><span>IPCA</span><b>${f1(r.ipca,2)}%</b></div>
+      <div class="tr"><span>Meta</span><b>${f1(r.meta,2)} ±${f1(r.tol,1)}</b></div>
+      <div class="tp">${st}</div>`;
+  }
+});
+
+/* --- desemprego (duas séries separadas) --- */
+lineChart('c-desemp',{
+  aria:'Taxa de desocupação média anual, PME 2002-2011 e PNAD Contínua 2012-2025',
+  x:D.map(r=>r.a), h:220, band:true, lo:0,
+  series:[
+    {v:D.map(r=>r.df==='PME'?r.des:null),   cls:'lineC', dot:'dotC', name:'PME',   marks:[2003,2011]},
+    {v:D.map(r=>r.df==='PNADC'?r.des:null), cls:'lineA', dot:'dotA', name:'PNADC', marks:[2020,2025]}
+  ],
+  tip:i=>{
+    const r=D[i];
+    return `<div class="ty">${r.a}</div>
+      <div class="tr"><span>Desocupação</span><b>${f1(r.des)}%</b></div>
+      <div class="tp">${r.df? (r.df==='PME'?'PME — 6 regiões metrop.':'PNAD Contínua — Brasil') : 'sem dado comparável'}</div>`;
+  }
+});
+
+/* --- juros --- */
+lineChart('c-juros',{
+  aria:'Selic no fim de cada ano e IPCA do ano, 2001 a 2025',
+  x:D.map(r=>r.a), h:230, band:true, lo:0,
+  series:[
+    {v:D.map(r=>r.sel),  cls:'lineA', dot:'dotA', name:'Selic', dec:2, marks:[2002,2020,2025]},
+    {v:D.map(r=>r.ipca), cls:'lineB', dot:'dotB', name:'IPCA',  dec:2}
+  ],
+  tip:i=>{
+    const r=D[i], jr=r.sel-r.ipca;
+    return `<div class="ty">${r.a}</div>
+      <div class="tr"><span>Selic (fim)</span><b>${f1(r.sel,2)}%</b></div>
+      <div class="tr"><span>IPCA</span><b>${f1(r.ipca,2)}%</b></div>
+      <div class="tr"><span>Juro real</span><b>${fs(jr,1)} p.p.</b></div>`;
+  }
+});
+
+/* --- Ideb --- */
+(function(){
+  const xs=IDEB.anos;
+  const W=880, padL=42, padR=52, padT=18, axisH=18;
+  const plotH=250, H=padT+plotH+axisH+10;
+  const wrap=document.getElementById('c-ideb');
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`, role:'img',
+    'aria-label':'Ideb nacional por etapa, 2005 a 2025'});
+  wrap.appendChild(svg);
+  const n=xs.length, iw=(W-padL-padR)/n, xAt=i=>padL+iw*(i+0.5);
+  const lo=3.0, hi=7.0;
+  const yAt=v=>padT+plotH-((v-lo)/(hi-lo))*plotH;
+  niceTicks(lo,hi,4).forEach(t=>{
+    el('line',{x1:padL,x2:W-padR,y1:yAt(t),y2:yAt(t),class:'gridline'},svg);
+    const lb=el('text',{x:padL-7,y:yAt(t)+3.4,class:'tick-y','text-anchor':'end'},svg);
+    lb.textContent=f1(t,1);
+  });
+  // metas 2025 as short markers on the right
+  const M=[['ai',IDEB.metas2025.ai,'var(--s1)'],['af',IDEB.metas2025.af,'var(--s2)'],['em',IDEB.metas2025.em,'var(--s3)']];
+  M.forEach(([k,v,c])=>{
+    el('line',{x1:xAt(n-1)-6,x2:W-padR,y1:yAt(v),y2:yAt(v),stroke:c,'stroke-width':1,
+      'stroke-opacity':.55},svg);
+    const t=el('text',{x:W-padR+4,y:yAt(v)+3.4,class:'dlabel-s'},svg);
+    t.textContent='meta '+f1(v,1);
+  });
+  const S=[['ai','lineA','dotA'],['af','lineB','dotB'],['em','lineC','dotC']];
+  S.forEach(([k,lc,dc])=>{
+    const pts=IDEB[k].map((v,i)=>[xAt(i),yAt(v)]);
+    el('path',{d:'M'+pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('L'),class:lc},svg);
+    pts.forEach(p=>el('circle',{cx:p[0],cy:p[1],r:3.5,class:dc},svg));
+    const t=el('text',{x:xAt(0)-8,y:yAt(IDEB[k][0])+3.6,class:'dlabel','text-anchor':'end'},svg);
+    t.textContent=f1(IDEB[k][0],1);
+    const t2=el('text',{x:xAt(n-1),y:yAt(IDEB[k][n-1])-10,class:'dlabel','text-anchor':'middle'},svg);
+    t2.textContent=f1(IDEB[k][n-1],1);
+  });
+  xs.forEach((x,i)=>{
+    const t=el('text',{x:xAt(i),y:padT+plotH+14,class:'tick','text-anchor':'middle'},svg);
+    t.textContent=String(x);
+  });
+  const tipRender = i => `<div class="ty">${xs[i]}</div>
+      <div class="tr"><span>Anos iniciais</span><b>${f1(IDEB.ai[i],1)}</b></div>
+      <div class="tr"><span>Anos finais</span><b>${f1(IDEB.af[i],1)}</b></div>
+      <div class="tr"><span>Ensino médio</span><b>${f1(IDEB.em[i],1)}</b></div>`;
+  addTip(wrap, svg, n, xAt, iw, padT, plotH, tipRender);
+})();
+
+/* ============================ 4. METAS POR UF ============================ */
+(function(){
+  const rows=[
+    {lab:'Anos iniciais', n:18, meta:'6,0', cor:'var(--s1)'},
+    {lab:'Anos finais',   n:5,  meta:'5,5', cor:'var(--s2)'},
+    {lab:'Ensino médio',  n:0,  meta:'5,2', cor:'var(--s3)'}
+  ];
+  document.getElementById('r-metas').innerHTML = rows.map(r=>`
+    <div class="rrow" style="grid-template-columns:96px 1fr 76px">
+      <span class="yr" style="font-family:var(--sans);font-weight:500">${r.lab}</span>
+      <span class="rtrack"><span class="rfill" style="width:${(r.n/27*100).toFixed(1)}%;background:${r.cor}"></span></span>
+      <span class="rv">${r.n} de 27</span>
+    </div>`).join('');
+
+  document.getElementById('tb-uf').innerHTML = UF.map(u=>`
+    <tr><td class="l">${u.uf}</td>
+      <td>${f1(u.ai,1)}</td><td>${f1(u.af,1)}</td><td>${f1(u.em,1)}</td></tr>`).join('') +
+    `<tr><td class="l" style="color:var(--muted)">Brasil</td>
+      <td style="color:var(--ink-2)">6,3</td><td style="color:var(--ink-2)">5,3</td><td style="color:var(--ink-2)">4,5</td></tr>`;
+})();
+
+/* ============================ 5. ÍNDICE COMPOSTO ============================ */
+const SCORE = (function(){
+  const pib=D.map(r=>r.pib), dev=D.map(r=>-(r.ipca-r.meta)), pri=D.map(r=>r.pri);
+  const z = v => { const m=v.reduce((a,b)=>a+b,0)/v.length,
+    s=Math.sqrt(v.reduce((a,b)=>a+(b-m)*(b-m),0)/v.length); return v.map(x=>(x-m)/s); };
+  const zp=z(pib), zd=z(dev), zc=z(pri);
+  const raw=D.map((_,i)=>2*zp[i]+zd[i]+zc[i]);
+  const lo=Math.min(...raw), hi=Math.max(...raw);
+  return raw.map(x=>100*(x-lo)/(hi-lo));
+})();
+
+(function(){
+  const idx = D.map((r,i)=>({r, s:SCORE[i]})).sort((a,b)=>b.s-a.s);
+  document.getElementById('r-anos').innerHTML = idx.map((o,k)=>{
+    const p=PMAP[o.r.g];
+    return `<div class="rrow">
+      <span class="rk">${k+1}</span>
+      <span class="yr">${o.r.a}</span>
+      <span class="rtrack" title="${p.curto}"><span class="rfill" style="width:${Math.max(1.2,o.s).toFixed(1)}%;background:${p.cor}"></span></span>
+      <span class="rv">${o.s.toFixed(1)}</span>
+    </div>`;
+  }).join('');
+})();
+
+/* ============================ 6. PLACAR POR GOVERNO ============================ */
+(function(){
+  const body=document.getElementById('tb-pres');
+  body.innerHTML = PRES.map(p=>{
+    const rs=D.filter(r=>r.g===p.id);
+    const mean=(f)=>{const v=rs.map(f).filter(x=>x!=null); return v.length? v.reduce((a,b)=>a+b,0)/v.length : null;};
+    const acum=rs.reduce((a,r)=>a*(1+r.pib/100),1)-1;
+    const sc=mean(r=>SCORE[D.indexOf(r)]);
+    const dv=rs.map(r=>r.dbgg).filter(x=>x!=null);
+    // dívida: do fim do ano anterior à posse ao fim do último ano
+    const prev=D.find(r=>r.a===p.ini-1);
+    const from=(prev&&prev.dbgg!=null)?prev.dbgg:(dv.length?dv[0]:null);
+    const to=dv.length?dv[dv.length-1]:null;
+    const delta=(from!=null&&to!=null)?to-from:null;
+    const cell=(v,cls)=>`<td class="${cls||''}">${v}</td>`;
+    return `<tr>
+      <td class="l"><span class="chip"><span class="sw" style="background:${p.cor}"></span>${p.curto}</span></td>
+      ${cell(rs.length)}
+      ${cell(fs(mean(r=>r.pib)), mean(r=>r.pib)>0?'pos':'neg')}
+      ${cell(fs(acum*100), acum>0?'pos':'neg')}
+      ${cell(f1(mean(r=>r.ipca),2))}
+      ${cell(f1(mean(r=>r.des)))}
+      ${cell(fs(mean(r=>r.pri)), mean(r=>r.pri)>0?'pos':'neg')}
+      ${cell(delta==null?'—':`${f1(to)} (${fs(delta)} p.p.)`, delta==null?'':(delta<0?'pos':'neg'))}
+      ${cell(f1(sc))}
+    </tr>`;
+  }).join('');
+})();
+
+/* ============================ 7. TABELA PRINCIPAL ============================ */
+const COLS=[
+  {k:'a',    h:'Ano',        t:'l', f:r=>r.a},
+  {k:'g',    h:'Governo',    t:'l', f:r=>{const p=PMAP[r.g];
+              return `<span class="chip"><span class="sw" style="background:${p.cor}"></span>${p.curto}</span>`;}, s:r=>r.a},
+  {k:'pib',  h:'PIB %',      f:r=>fs(r.pib),      c:r=>r.pib>0?'pos':'neg'},
+  {k:'ipca', h:'IPCA %',     f:r=>f1(r.ipca,2)},
+  {k:'meta', h:'Meta',       f:r=>`${f1(r.meta,2)} ±${f1(r.tol,1)}`, s:r=>r.meta},
+  {k:'des',  h:'Desocup. %', f:r=>f1(r.des)},
+  {k:'df',   h:'Fonte',      t:'l', f:r=>r.df||'—', s:r=>r.df||''},
+  {k:'pri',  h:'Primário %PIB', f:r=>fs(r.pri,2), c:r=>r.pri>0?'pos':'neg'},
+  {k:'dbgg', h:'Dívida %PIB',f:r=>f1(r.dbgg)},
+  {k:'sel',  h:'Selic %',    f:r=>f1(r.sel,2)},
+  {k:'jr',   h:'Juro real',  f:r=>fs(r.sel-r.ipca), s:r=>r.sel-r.ipca},
+  {k:'cam',  h:'R$/US$',     f:r=>f1(r.cam,2)},
+  {k:'sc',   h:'Índice',     f:r=>f1(SCORE[D.indexOf(r)]), s:r=>SCORE[D.indexOf(r)]}
+];
+let sortK='a', sortDir=1;
+function renderMain(){
+  document.getElementById('th-main').innerHTML = COLS.map(c=>
+    `<th class="${c.t||''}" data-k="${c.k}" style="cursor:pointer" title="ordenar">${c.h}${sortK===c.k?(sortDir>0?' ↑':' ↓'):''}</th>`).join('');
+  const col=COLS.find(c=>c.k===sortK);
+  const getv = col.s || (r=>r[sortK]);
+  const rows=[...D].sort((a,b)=>{
+    const va=getv(a), vb=getv(b);
+    if (va==null) return 1; if (vb==null) return -1;
+    return (typeof va==='string')? sortDir*va.localeCompare(vb) : sortDir*(va-vb);
+  });
+  document.getElementById('tb-main').innerHTML = rows.map(r=>
+    '<tr>'+COLS.map(c=>`<td class="${c.t||''} ${c.c?c.c(r):''}">${c.f(r)}</td>`).join('')+'</tr>').join('');
+  document.querySelectorAll('#th-main th').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const k=th.dataset.k;
+      if (k===sortK) sortDir*=-1; else { sortK=k; sortDir = (k==='a')?1:-1; }
+      renderMain();
+    });
+  });
+}
+renderMain();
+
+document.getElementById('th-ideb').innerHTML =
+  '<th class="l">Etapa</th>'+IDEB.anos.map(a=>`<th>${a}</th>`).join('')+'<th>2005→2025</th>';
+document.getElementById('tb-ideb').innerHTML = [
+  ['Anos iniciais (1º–5º)','ai','var(--s1)'],
+  ['Anos finais (6º–9º)','af','var(--s2)'],
+  ['Ensino médio','em','var(--s3)']
+].map(([lab,k,c])=>{
+  const v=IDEB[k], d=v[v.length-1]-v[0];
+  return `<tr><td class="l"><span class="chip"><span class="sw" style="background:${c}"></span>${lab}</span></td>`+
+    v.map((x,i)=>`<td${i===v.length-1?' style="font-weight:600;color:var(--ink)"':''}>${f1(x,1)}</td>`).join('')+
+    `<td class="pos">${fs(d,1)}</td></tr>`;
+}).join('');
+
+/* ============================ 8. CSV ============================ */
+document.getElementById('btn-csv').addEventListener('click', async ()=>{
+  const head=['ano','governo','pib_var_real_pct','ipca_pct','meta_centro','meta_tolerancia',
+    'desocupacao_pct','fonte_desocupacao','primario_pct_pib','divida_bruta_pct_pib',
+    'selic_fim_ano_pct','juro_real_pp','cambio_medio_brl_usd','indice_composto'];
+  const lines=[head.join(';')].concat(D.map((r,i)=>[
+    r.a, PMAP[r.g].curto, r.pib, r.ipca, r.meta, r.tol, r.des==null?'':r.des, r.df||'',
+    r.pri, r.dbgg==null?'':r.dbgg, r.sel, (r.sel-r.ipca).toFixed(2), r.cam, SCORE[i].toFixed(1)
+  ].join(';')));
+  const txt=lines.join('\n');
+  const msg=document.getElementById('csv-msg');
+  try{ await navigator.clipboard.writeText(txt); msg.textContent='Copiado — 25 linhas, 14 colunas.'; }
+  catch(e){
+    const ta=document.createElement('textarea');
+    ta.value=txt; ta.style.cssText='position:fixed;left:-9999px';
+    document.body.appendChild(ta); ta.select();
+    msg.textContent='Selecionado — use Ctrl/Cmd+C para copiar.';
+    setTimeout(()=>ta.remove(), 15000);
+  }
+  setTimeout(()=>{ msg.textContent=''; }, 6000);
+});
+</script>
